@@ -183,7 +183,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    height: sizeBox.width,
+                    //height: sizeBox.width,
                     child: Listener(
                       //Para evento de mover
                       onPointerUp: (event) {

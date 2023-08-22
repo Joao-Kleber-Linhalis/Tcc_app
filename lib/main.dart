@@ -13,8 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       //alterer entre ambos para mudar o jogo, ainda não coloquei um menu
         home: //AdivinhePalavra());
         PuzzleQuebraCabeca());
+        
   }
 }
