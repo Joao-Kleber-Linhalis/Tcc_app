@@ -16,6 +16,9 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Quebra Cabeça"),
+      ),
       body: Container(
         color: Colors.blue,
         child: SafeArea(

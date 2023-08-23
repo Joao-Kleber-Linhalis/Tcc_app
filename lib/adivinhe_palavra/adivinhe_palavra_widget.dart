@@ -101,6 +101,11 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
             padding: EdgeInsets.all(10),
             alignment: Alignment.center,
             child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(10.0)),
+                backgroundColor: Colors.black,
+              ),
               child: Text(
                 "${currentQues.question ?? ''}",
                 style: TextStyle(
@@ -109,7 +114,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () =>_falar(currentQues.question.toString()), //ainda sem funcionar
+              onPressed: () =>
+                  _falar(currentQues.question.toString()), //ainda sem funcionar
             ),
           ),
 
@@ -117,7 +123,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
           Container(
             padding: EdgeInsets.symmetric(vertical: 30, horizontal: 10),
             alignment: Alignment.center,
-            
             child: LayoutBuilder(
               builder: (context, constraints) {
                 return Row(
@@ -149,7 +154,11 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                           color: color,
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        width:currentQues.puzzles.length <=7 ? constraints.biggest.width / 7 - 6 :  constraints.biggest.width / currentQues.puzzles.length - 6,
+                        width: currentQues.puzzles.length <= 7
+                            ? constraints.biggest.width / 7 - 6
+                            : constraints.biggest.width /
+                                    currentQues.puzzles.length -
+                                6,
                         height: constraints.biggest.width / 7 - 6,
                         margin: EdgeInsets.all(3),
                         child:
@@ -220,7 +229,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     );
   }
 
-
 //Função para gerar tanto os botões quando a palavra, além de servir para ir pra proxima ou para voltar
   void gerarAdivinhe(
       {List<Question>? loop, bool next = false, bool left = false}) {
@@ -258,7 +266,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 
     if (newPuzzle.errors!.isEmpty) {
       currentQues.arrayBtns = newPuzzle.puzzle!.expand((list) => list).toList();
-      currentQues.arrayBtns!.shuffle(); //Embaralha os botões pra nao ficarem em ordem
+      currentQues.arrayBtns!
+          .shuffle(); //Embaralha os botões pra nao ficarem em ordem
 
       bool isDone = currentQues.isDone;
 
@@ -331,16 +340,15 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     }
   }
 
-
 //Pra falar... não funcionando
   _falar(String text) async {
-  try {
-    //print(text);
-    await fluttertts.setLanguage("pt-BR");
-    await fluttertts.setPitch(1.5);
-    await fluttertts.speak(text);
-  } catch (e) {
-    print('Erro ao inicializar o flutter_tts: $e');
+    try {
+      //print(text);
+      await fluttertts.setLanguage("pt-BR");
+      await fluttertts.setPitch(1.5);
+      await fluttertts.speak(text);
+    } catch (e) {
+      print('Erro ao inicializar o flutter_tts: $e');
+    }
   }
-}
 }

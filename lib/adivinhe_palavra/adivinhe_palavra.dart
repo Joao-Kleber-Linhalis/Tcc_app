@@ -22,6 +22,9 @@ class _AdivinhePalavraState extends State<AdivinhePalavra> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Adivinhe a palavra"),
+      ),
       body: SafeArea(
         child: Container(
             color: Colors.green,
