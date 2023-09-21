@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quebra_cabecas/quebra_cabeca/peca_quebra_cabeca_widget.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/peca_quebra_cabeca_widget.dart';
 
 class PecaQuebraCabeca {
   Offset offset;

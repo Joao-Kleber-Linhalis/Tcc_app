@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quebra_cabecas/quebra_cabeca/quebra_cabeca_widget.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/quebra_cabeca_widget.dart';
 
 class PuzzleQuebraCabeca extends StatefulWidget {
   PuzzleQuebraCabeca({super.key});
@@ -18,6 +18,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Quebra Cabeça"),
+        centerTitle: true,
       ),
       body: Container(
         color: Colors.blue,

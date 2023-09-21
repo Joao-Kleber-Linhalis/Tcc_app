@@ -3,12 +3,12 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:quebra_cabecas/quebra_cabeca/domain/imageBox.dart';
-import 'package:quebra_cabecas/quebra_cabeca/domain/peca_quebra_cabeca.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/domain/imageBox.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/domain/peca_quebra_cabeca.dart';
 import 'package:image/image.dart' as ui;
 import 'dart:math' as math;
-import 'package:quebra_cabecas/quebra_cabeca/domain/pos_peca_quebra_cabeca.dart';
-import 'package:quebra_cabecas/quebra_cabeca/peca_quebra_cabeca_widget.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/domain/pos_peca_quebra_cabeca.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/peca_quebra_cabeca_widget.dart';
 export 'quebra_cabeca_widget.dart';
 
 class QuebraCabecaWidget extends StatefulWidget {

@@ -1,4 +1,4 @@
-import 'package:quebra_cabecas/adivinhe_palavra/domain/question_char.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
 
 class Question {
   String question;

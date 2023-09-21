@@ -3,8 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/domain/question.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/domain/question_char.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
 import 'package:word_search_safety/word_search_safety.dart';
 
 class AdivinhePalavraWidget extends StatefulWidget {
@@ -345,7 +345,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     try {
       //print(text);
       await fluttertts.setLanguage("pt-BR");
-      await fluttertts.setPitch(1.5);
+      await fluttertts.setPitch(1);
       await fluttertts.speak(text);
     } catch (e) {
       print('Erro ao inicializar o flutter_tts: $e');

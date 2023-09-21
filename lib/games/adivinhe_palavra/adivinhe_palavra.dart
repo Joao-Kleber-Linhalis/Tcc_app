@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/adivinhe_palavra_widget.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/data/list_questions.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/domain/question.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/adivinhe_palavra_widget.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/data/list_questions.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 
 class AdivinhePalavra extends StatefulWidget {
   const AdivinhePalavra({super.key});
@@ -24,6 +24,7 @@ class _AdivinhePalavraState extends State<AdivinhePalavra> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Adivinhe a palavra"),
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Container(

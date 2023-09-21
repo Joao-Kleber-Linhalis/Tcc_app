@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quebra_cabecas/adivinhe_palavra/domain/question.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 
 
 //Data para testes

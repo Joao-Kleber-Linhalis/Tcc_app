@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quebra_cabecas/quebra_cabeca/domain/pos_peca_quebra_cabeca.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/domain/pos_peca_quebra_cabeca.dart';
 
 class ImageBox {
   Widget image;

@@ -1,6 +1,9 @@
-import 'package:quebra_cabecas/adivinhe_palavra/adivinhe_palavra.dart';
+import 'package:quebra_cabecas/games/adivinhe_palavra/adivinhe_palavra.dart';
 import 'package:quebra_cabecas/domain/game.dart';
-import 'package:quebra_cabecas/quebra_cabeca/puzzle_quebra_cabeca.dart';
+import 'package:quebra_cabecas/games/quebra_cabeca/puzzle_quebra_cabeca.dart';
+import 'package:quebra_cabecas/games/shape_match/shape_match.dart';
+
+//Imagens meramente de exemplo
 
 final dummyGames = [
   Game(
@@ -13,4 +16,9 @@ final dummyGames = [
       nome: "Quebra Cabeça",
       imageURL:
           "https://img.freepik.com/vetores-gratis/fundo-de-quebra-cabeca-colorido_1308-117161.jpg?w=2000"),
+  Game(
+    jogo: ShapeMatch(),
+    nome: "Correspondência de formas",
+    imageURL: "https://www.artesanatopassoapassoja.com.br/wp-content/uploads/2021/01/formas-geometricas.jpg",
+  )
 ];

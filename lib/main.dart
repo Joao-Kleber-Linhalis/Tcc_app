@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => GameList(),
+          //Cria a lista de jogos dentro do provider, permitindo acesso dentro de td a arvore de widget
         )
       ],
       child: MaterialApp(
