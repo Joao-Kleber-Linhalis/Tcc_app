@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -9,22 +8,29 @@ import 'package:image/image.dart' as ui;
 import 'dart:math' as math;
 import 'package:quebra_cabecas/games/quebra_cabeca/domain/pos_peca_quebra_cabeca.dart';
 import 'package:quebra_cabecas/games/quebra_cabeca/peca_quebra_cabeca_widget.dart';
+import 'package:quebra_cabecas/uteis/speak.dart';
 export 'quebra_cabeca_widget.dart';
 
 class QuebraCabecaWidget extends StatefulWidget {
   final Widget child;
   final Function() callBackFinish;
   final Function() callBackSucess;
-  QuebraCabecaWidget({super.key, required this.child, required  this.callBackFinish, required  this.callBackSucess});
+  QuebraCabecaWidget(
+      {super.key,
+      required this.child,
+      required this.callBackFinish,
+      required this.callBackSucess});
 
   @override
   State<QuebraCabecaWidget> createState() => QuebraCabecaWidgetState();
 }
 
 class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
+
   GlobalKey _globalKey = GlobalKey();
   Size size = Size(0, 0);
   late ui.Image fullImage;
+  late bool easyMode;
 
   List<List<PecaQuebraCabeca>> pecas = [];
   ValueNotifier<List<PecaQuebraCabeca>> blockNotifier =
@@ -55,15 +61,96 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
     setState(() {});
   }
 
+  Future<void> geradorQuebraCabecaPecasFacil() async {
+    easyMode = true;
+    // Lista do block de imagens (pecas)
+    pecas = [];
+
+    // Pegar a imagem
+    fullImage = await _getImageFromWidget();
+
+    // Quantas peças y = linhas/altura & x = coluna/largura
+    // Precisam ser iguais
+    int xSplitCount = 5;
+    int ySplitCount = 5;
+
+    double widthPerBlock = fullImage.width / xSplitCount;
+    double heightPerBlock = fullImage.height / ySplitCount;
+
+    for (var y = 0; y < ySplitCount; y++) {
+      List<PecaQuebraCabeca> tempImages = [];
+      pecas.add(tempImages);
+      for (var x = 0; x < xSplitCount; x++) {
+        Offset offsetCenter = Offset(widthPerBlock / 2, heightPerBlock / 2);
+
+        PosPecaQuebraCabeca posPecaQuebraCabeca = PosPecaQuebraCabeca(
+          bottom: y == ySplitCount - 1 ? 0 : 1,
+          left: x == 0 ? 0 : -1,
+          right: x == xSplitCount - 1 ? 0 : 1,
+          top: y == 0 ? 0 : -1,
+        );
+
+        double xAxis = widthPerBlock * x;
+        double yAxis = heightPerBlock * y;
+
+        double widthPerBlockTemp = widthPerBlock;
+        double heightPerBlockTemp = heightPerBlock;
+
+        ui.Image temp = ui.copyCrop(
+          fullImage,
+          x: xAxis.round(),
+          y: yAxis.round(),
+          width: widthPerBlockTemp.round(),
+          height: heightPerBlockTemp.round(),
+        );
+
+        Offset offset = Offset(
+          size.width / 2 - widthPerBlockTemp / 2,
+          size.height / 2 - heightPerBlockTemp / 2,
+        );
+
+        ImageBox imageBox = ImageBox(
+          image: Image.memory(
+            ui.encodePng(temp),
+            fit: BoxFit.contain,
+          ),
+          isDone: false,
+          offsetCenter: offsetCenter,
+          posicao: posPecaQuebraCabeca,
+          radiusPoint: 0.0,
+          size: Size(widthPerBlockTemp, heightPerBlockTemp),
+        );
+
+        pecas[y].add(
+          PecaQuebraCabeca(
+            offset: offset,
+            offsetDefault: Offset(xAxis, yAxis),
+            pecaQuebraCabecaWidget: PecaQuebraCabecaWidget(
+              imageBox: imageBox,
+            ),
+            numero: y * xSplitCount + x + 1,
+          ),
+        );
+      }
+    }
+
+    blockNotifier.value = pecas.expand((image) => image).toList();
+    blockNotifier.value.shuffle();
+    blockNotifier.notifyListeners();
+    _index = 0;
+    setState(() {});
+  }
+
   //Função que corta a imagem
   Future<void> geradorQuebraCabecaPecas() async {
+    easyMode = false;
     //Lista do block de imagens (pecas)
     pecas = [];
 
     //Pegar a imagem
     fullImage = await _getImageFromWidget();
 
-    // quantas peças y = linhas/altura & x = coluna/largura  
+    // quantas peças y = linhas/altura & x = coluna/largura
     //PRECISAM SER IGUAIS
     int xSplitCount = 5;
     int ySplitCount = 5;
@@ -144,6 +231,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
             pecaQuebraCabecaWidget: PecaQuebraCabecaWidget(
               imageBox: imageBox,
             ),
+            numero: y * xSplitCount + x + 1,
           ),
         );
       }
@@ -160,6 +248,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
     // TODO: implement initState
     _index = 0;
     _carouselController = CarouselController();
+    easyMode = false;
     super.initState();
   }
 
@@ -193,7 +282,9 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                         }
                         if (_index == -1) {
                           _carouselController.nextPage(
-                            duration: Duration(microseconds: 200), //Velocidade para aparecer a proxima peça
+                            duration: Duration(
+                                microseconds:
+                                    200), //Velocidade para aparecer a proxima peça
                           );
                           setState(() {
                             //_index = 0;
@@ -253,14 +344,51 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                                 //Pinta o background branco pra deixar a marca de recorte das peças
                                 child: Stack(
                                   children: [
+                                    // Defina o tamanho do círculo como um terço do tamanho da peça
                                     if (pecasDone.length > 0)
                                       ...pecasDone.map(
                                         (map) {
+                                          final imageSize = map
+                                              .pecaQuebraCabecaWidget
+                                              .imageBox
+                                              .size;
                                           return Positioned(
                                             left: map.offset.dx,
                                             top: map.offset.dy,
                                             child: Container(
-                                              child: map.pecaQuebraCabecaWidget,
+                                              child: Stack(
+                                                alignment: Alignment.center,
+                                                children: [
+                                                  map.pecaQuebraCabecaWidget,
+                                                  if (easyMode)
+                                                    Positioned(
+                                                      left: 0,
+                                                      top: 0,
+                                                      child: Container(
+                                                        width: 20,
+                                                        height: 20,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
+                                                          shape:
+                                                              BoxShape.circle,
+                                                        ),
+                                                        child: Center(
+                                                          child: Text(
+                                                            map.numero
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.black,
+                                                              fontSize:
+                                                                  10.0, // Tamanho do número (ajuste conforme necessário)
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
                                             ),
                                           );
                                         },
@@ -323,6 +451,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                         onPageChanged: (index, reason) {
                           _index = index;
                           setState(() {});
+                          falar(pecasNotDone[_index].numero.toString());
                         },
                       ),
                       items: pecasNotDone.map((peca) {
@@ -330,10 +459,38 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                             peca.pecaQuebraCabecaWidget.imageBox.size;
                         return FittedBox(
                           child: Container(
-                            width: sizePeca.width,
-                            height: sizePeca.height,
-                            child: peca.pecaQuebraCabecaWidget,
-                          ),
+                              width: sizePeca.width,
+                              height: sizePeca.height,
+                              child: //peca.pecaQuebraCabecaWidget,
+                                  Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  peca.pecaQuebraCabecaWidget,
+                                  Positioned(
+                                    left: 0,
+                                    top: 0,
+                                    child: Container(
+                                      width: 40.0, // Largura do círculo
+                                      height: 40.0, // Altura do círculo
+                                      decoration: BoxDecoration(
+                                        color: Colors.white, // Cor do círculo
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          peca.numero
+                                              .toString(), // Exibe o número da peça
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize:
+                                                18.0, // Tamanho do número (ajuste conforme necessário)
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              )),
                         );
                       }).toList(),
                     ),
@@ -355,8 +512,8 @@ class QuebraCabecaPintorBackground extends CustomPainter {
     // TODO: implement paint
     Paint paint = new Paint()
       ..style = PaintingStyle.stroke
-      ..color = Colors.black12
-      ..strokeWidth = 2
+      ..color = Colors.black
+      ..strokeWidth = 1.5
       ..strokeCap = StrokeCap.round;
     Path path = Path();
     this.pecas.forEach((element) {

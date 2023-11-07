@@ -42,13 +42,19 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
             ),
             Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ElevatedButton(
                     onPressed: () async{
                       await quebraKey.currentState?.geradorQuebraCabecaPecas();
                     },
                     child: Text("Gerar"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async{
+                      await quebraKey.currentState?.geradorQuebraCabecaPecasFacil();
+                    },
+                    child: Text("Gerar Fácil"),
                   ),
                   ElevatedButton(
                     onPressed: (){

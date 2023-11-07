@@ -5,9 +5,12 @@ class PecaQuebraCabeca {
   Offset offset;
   Offset offsetDefault;
   PecaQuebraCabecaWidget pecaQuebraCabecaWidget;
+  int numero;
 
-  PecaQuebraCabeca(
-      {required this.offset,
-      required this.offsetDefault,
-      required this.pecaQuebraCabecaWidget});
+  PecaQuebraCabeca({
+    required this.offset,
+    required this.offsetDefault,
+    required this.pecaQuebraCabecaWidget,
+    required this.numero
+  });
 }

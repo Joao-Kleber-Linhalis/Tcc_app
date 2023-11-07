@@ -1,10 +1,10 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
+import 'package:quebra_cabecas/uteis/speak.dart';
 import 'package:word_search_safety/word_search_safety.dart';
 
 class AdivinhePalavraWidget extends StatefulWidget {
@@ -19,7 +19,6 @@ class AdivinhePalavraWidget extends StatefulWidget {
 class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   late Size size;
   late List<Question> listQuestions;
-  late FlutterTts fluttertts; //para falar... ainda nao funciona
   int indexQues = 0; //Index da questão atual
   int hintCount = 0;
 
@@ -28,7 +27,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     super.initState();
     size = widget.size;
     listQuestions = widget.listQuestions;
-    fluttertts = FlutterTts();
     gerarAdivinhe();
   }
 
@@ -114,8 +112,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () =>
-                  _falar(currentQues.question.toString()), //ainda sem funcionar
+              onPressed:() => falar(currentQues.question),
+             //ainda sem funcionar
             ),
           ),
 
@@ -340,15 +338,4 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     }
   }
 
-//Pra falar... não funcionando
-  _falar(String text) async {
-    try {
-      //print(text);
-      await fluttertts.setLanguage("pt-BR");
-      await fluttertts.setPitch(1);
-      await fluttertts.speak(text);
-    } catch (e) {
-      print('Erro ao inicializar o flutter_tts: $e');
-    }
-  }
 }
