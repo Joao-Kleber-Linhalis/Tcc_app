@@ -48,7 +48,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                 InkWell(
                   onTap: () => gerarDica(),
                   child: Icon(
-                    Icons.healing_outlined,
+                    Icons.lightbulb_outline,
                     size: 45,
                     color: Colors.yellow[200],
                   ),
@@ -91,6 +91,15 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   currentQues.pathImage,
                   fit: BoxFit.contain,
                 ),
+                //Para fazer a img clickavel e falar a reposta
+                /*child: InkWell(
+                  child: Image.network(
+                    currentQues.pathImage,
+                    fit: BoxFit.contain,
+                  ),
+                  onTap: () => falar(currentQues.answer),
+                ),*/
+                //
               ),
             ),
           ),
@@ -112,8 +121,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed:() => falar(currentQues.question),
-             //ainda sem funcionar
+              onPressed: () => falar(currentQues.question),
+              //ainda sem funcionar
             ),
           ),
 
@@ -130,7 +139,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   children: currentQues.puzzles.map((puzzle) {
                     Color? color = Color.fromARGB(255, 75, 212, 240);
                     if (currentQues.isDone) {
-                      color = Colors.green[300];
+                      color = Colors.green;
                     } else if (puzzle.hintShow) {
                       color = Colors.yellow[100];
                     } else if (currentQues.isFull) {
@@ -160,7 +169,11 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                         height: constraints.biggest.width / 7 - 6,
                         margin: EdgeInsets.all(3),
                         child:
-                            Text("${puzzle.currentValue ?? ''}".toUpperCase()),
+                            Text("${puzzle.currentValue ?? ''}".toUpperCase(),
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),),
                       ),
                     );
                   }).toList(),
@@ -174,7 +187,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
             padding: EdgeInsets.all(10),
             alignment: Alignment.center,
             child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 childAspectRatio: 1,
                 crossAxisCount: 8,
                 crossAxisSpacing: 4,
@@ -189,30 +202,31 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                 return LayoutBuilder(
                   builder: (context, constraints) {
                     Color color = statusBtn
-                        ? Colors.white70
+                        ? Colors.white54
                         : Color.fromARGB(255, 75, 212, 240);
                     return Container(
+                      alignment: Alignment.center,
                       decoration: BoxDecoration(
                         color: color,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      alignment: Alignment.center,
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints.tightFor(
-                            height: constraints.biggest.height),
+                      child: FittedBox(
+                        fit: BoxFit.cover,
                         child: ElevatedButton(
-                          style:
-                              ElevatedButton.styleFrom(backgroundColor: color),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: color,
+                          ),
                           child: Text(
-                            //textAlign: TextAlign.center,
                             "${currentQues.arrayBtns?[index]}".toUpperCase(),
                             style: TextStyle(
-                              fontSize: 25,
+                              fontSize: 50,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           onPressed: () {
-                            if (!statusBtn) setBtnClick(index);
+                            if (!statusBtn) {
+                              setBtnClick(index);
+                            }
                           },
                         ),
                       ),
@@ -237,8 +251,14 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     } else {
       if (next && indexQues < listQuestions.length - 1) {
         indexQues++;
+        if(listQuestions[indexQues].isDone == false && listQuestions[indexQues].isFull == true){
+          listQuestions[indexQues].isFull = false;
+        }
       } else if (left && indexQues > 0) {
         indexQues--;
+        if(listQuestions[indexQues].isDone == false && listQuestions[indexQues].isFull == true){
+          listQuestions[indexQues].isFull = false;
+        }
       } else if (indexQues >= listQuestions.length - 1) {
         return;
       }
@@ -287,18 +307,20 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     List<QuestionChar> puzzleNoHints = currentQues.puzzles
         .where((puzzle) => !puzzle.hintShow && puzzle.currentIndex == null)
         .toList();
-    if (puzzleNoHints.length > 0) {
+    if (puzzleNoHints.length > 0 &&
+        hintCount < (currentQues.answer.length * 0.6)) {
       hintCount++;
       int indexHint = Random().nextInt(puzzleNoHints.length);
       int countTemp = 0;
-      print("hin $indexHint");
-
       currentQues.puzzles = currentQues.puzzles.map((puzzle) {
         if (!puzzle.hintShow && puzzle.currentIndex == null) countTemp++;
-
         if (indexHint == countTemp - 1) {
+          if (puzzle.hintShow == false) {
+            falar(puzzle.correctValue as String);
+          }
           puzzle.hintShow = true;
           puzzle.currentValue = puzzle.correctValue;
+          print("current ${puzzle.correctValue}");
           puzzle.currentIndex = currentQues.arrayBtns!
               .indexWhere((btn) => btn == puzzle.correctValue);
         }
@@ -323,19 +345,22 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         currentQues.puzzles.indexWhere((puzzle) => puzzle.currentValue == null);
 
     if (currentIndexEmpty >= 0) {
+      falar(currentQues.arrayBtns![index]);
       currentQues.puzzles[currentIndexEmpty].currentIndex = index;
       currentQues.puzzles[currentIndexEmpty].currentValue =
           currentQues.arrayBtns![index];
 
       if (currentQues.fieldCompleteCorrect()) {
         currentQues.isDone = true;
+        Future.delayed(Duration(seconds: 1),(){
+          falar(currentQues.answer);
+        });
         setState(() {});
-        Future.delayed(Duration(seconds: 1));
-        gerarAdivinhe(next: true);
+        Future.delayed(Duration(seconds: 10),(){
+          gerarAdivinhe(next: true);
+        });
       }
-
       setState(() {});
     }
   }
-
 }

@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.purple,
             secondary: Colors.deepOrange,
+            background: Colors.blue,
           ),
         ),
         //alterer entre ambos para mudar o jogo, ainda não coloquei um menu

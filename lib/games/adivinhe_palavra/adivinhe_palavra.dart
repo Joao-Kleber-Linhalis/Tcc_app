@@ -28,14 +28,14 @@ class _AdivinhePalavraState extends State<AdivinhePalavra> {
       ),
       body: SafeArea(
         child: Container(
-            color: Colors.green,
+            color: Theme.of(context).colorScheme.background,
             child: Column(
               children: [
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Container(
-                        color: Colors.blue,
+                        color: Theme.of(context).colorScheme.background,
                         child: AdivinhePalavraWidget(
                           constraints.biggest,
                           listQuestions.map((ques) => ques.clone()).toList(),
