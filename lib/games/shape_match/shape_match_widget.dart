@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,11 @@ class ShapeMatchWidget extends StatefulWidget {
 
 class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     with SingleTickerProviderStateMixin {
+
+  Timer? inactivityTimer;
+  static const int inactivityDuration = 10;    
+  bool tutorialDialogShown = false;
+
   late Size size;
   List<ClassShape> classShapes = [];
   Offset? offsetTouch;
@@ -31,6 +37,14 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       value: 0,
       vsync: this,
     );
+
+    inactivityTimer = Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+      // Exibe o indicador de tutorial após um período de inatividade
+      if (!tutorialDialogShown) {
+        showTutorialIndicator();
+      }
+    });
+
     animation = Tween<double>(begin: 0, end: 1).animate(animationController)
       ..addListener(() {
         // Conferir se index child é nulo
@@ -59,12 +73,64 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
   }
 
   @override
+  void dispose() {
+    inactivityTimer?.cancel();
+    super.dispose();
+  }
+
+  void resetInactivityTimer() {
+    inactivityTimer?.cancel();
+    inactivityTimer = Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+      if (!tutorialDialogShown) {
+        showTutorialIndicator();
+      }
+    });
+  }
+
+  // Método para exibir o indicador de tutorial
+  void showTutorialIndicator() {
+    tutorialDialogShown = true;
+    // Adicione aqui a lógica para exibir o indicador de tutorial
+    // Pode ser um modal, uma mensagem na tela, etc.
+    // Por exemplo:
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Dica'),
+          content: Text('Arraste a peça para o local indicado!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                tutorialDialogShown = false;
+                Navigator.pop(context); // Fechar o indicador de tutorial
+              },
+              child: Text('Entendi'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  ClassShape? findFirstUnmatchedShape() {
+  for (ClassShape shape in classShapes) {
+    if (!shape.isDone) {
+      return shape;
+    }
+  }
+  return null;
+}
+
+
+  @override
   Widget build(BuildContext context) {
     size = widget.size;
     if (classShapes.isEmpty) generateList();
 
     return Listener(
       onPointerUp: (event) {
+        resetInactivityTimer();
         if (indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -75,6 +141,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
         }
       },
       onPointerMove: (event) {
+        resetInactivityTimer();
         if (offsetTouch != null && indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -168,8 +235,9 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
     classShapes = [];
 
-    //calcular quantas formas no width atual
+    //calcular quantas formas no width atual mas tbm pode setar um tamanho fixo, como apenas 6 e etc...
     int totalShape = size.width ~/ (width + padding * 2);
+    
 
     width = (size.width - (padding * 2) * totalShape) / totalShape;
     height = width;
