@@ -6,8 +6,9 @@ import 'package:quebra_cabecas/games/shape_match/domain/class_shape.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
 
 class ShapeMatchWidget extends StatefulWidget {
+  final void Function() conffeti;
   Size size;
-  ShapeMatchWidget({super.key, required this.size});
+  ShapeMatchWidget({super.key, required this.size, required this.conffeti});
 
   @override
   State<ShapeMatchWidget> createState() => ShapeMatchWidgetState();
@@ -168,6 +169,10 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     return null;
   }
 
+  _confetti(){
+    widget.conffeti();
+  }
+
   @override
   Widget build(BuildContext context) {
     size = widget.size;
@@ -201,9 +206,12 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
             //se não estiver, mover para posição atual
             currentShape.currentPos = event.localPosition - offsetTouch!;
           }
-
           setState(() {});
         }
+        bool todosConcluidos = classShapes.every((shape) => shape.isDone);
+           if(todosConcluidos){
+            _confetti();
+           }
       },
       child: Container(
         child: Stack(
@@ -296,7 +304,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
   }
 
   void generateList() {
-    print("cachorro");
+    resetInactivityTimer();
 
     double width = 60;
     double height = 80;

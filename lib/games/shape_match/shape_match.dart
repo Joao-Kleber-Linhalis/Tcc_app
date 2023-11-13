@@ -1,6 +1,8 @@
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/games/shape_match/shape_match_widget.dart';
 import 'package:quebra_cabecas/uteis/widgts/botao.dart';
+import 'package:quebra_cabecas/uteis/widgts/confetti.dart';
 
 class ShapeMatch extends StatefulWidget {
   const ShapeMatch({super.key});
@@ -10,7 +12,25 @@ class ShapeMatch extends StatefulWidget {
 }
 
 class _ShapeMatchState extends State<ShapeMatch> {
+  late ConfettiController _controllerCenter;
   GlobalKey<ShapeMatchWidgetState> globalKey = GlobalKey();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _controllerCenter = ConfettiHelper.createController();
+  }
+
+  @override
+  void dispose() {
+    _controllerCenter.dispose();
+    super.dispose();
+  }
+
+  void _exibirEfeito() {
+    ConfettiHelper.showConfetti(_controllerCenter);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +42,7 @@ class _ShapeMatchState extends State<ShapeMatch> {
       body: SafeArea(
         child: Column(
           children: [
+            ConfettiHelper.confettiWidget(_controllerCenter),
             Container(
               margin: EdgeInsets.only(top: 30),
               padding: EdgeInsets.all(10),
@@ -38,6 +59,7 @@ class _ShapeMatchState extends State<ShapeMatch> {
                   return ShapeMatchWidget(
                     key: globalKey,
                     size: constraints.biggest, //passar tamanho
+                    conffeti: _exibirEfeito,
                   );
                 },
               ),
@@ -47,8 +69,9 @@ class _ShapeMatchState extends State<ShapeMatch> {
                   texto: "Reload",
                   ao_clicar: () {
                     globalKey.currentState!.generateList();
+                    //_exibirEfeito();
                   }),
-            )
+            ),
           ],
         ),
       ),

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:advanced_icon/advanced_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
@@ -26,6 +27,20 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   late List<Question> listQuestions;
   int indexQues = 0; //Index da questão atual
   int hintCount = 0;
+
+  AdvancedIconState _state = AdvancedIconState.primary;
+
+  void _changeState() {
+    setState(() {
+      if (_state == AdvancedIconState.primary) {
+        _state = AdvancedIconState.secondary;
+        Future.delayed(Duration(seconds: 1), () {
+          _state = AdvancedIconState.primary;
+          setState(() {});
+        });
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -115,6 +130,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 
   void resetInactivityTimer() {
     inactivityTimer?.cancel();
+    inactivityTimer?.cancel;
+    setState(() {});
     inactivityTimer =
         Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
       if (!tutorialDialogShown) {
@@ -143,11 +160,17 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: () => gerarDica(),
-                  child: Icon(
-                    Icons.lightbulb_outline,
+                  onTap: ()  {
+                     resetInactivityTimer();
+                    gerarDica();
+                  },
+                  child: AdvancedIcon(
+                    icon: Icons.lightbulb_outline,
+                    secondaryIcon: Icons.lightbulb,
                     size: 45,
                     color: Colors.yellow[200],
+                    state: _state,
+                    effect: AdvancedIconEffect.bubble,
                   ),
                 ),
                 Row(
@@ -350,6 +373,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 //Função para gerar tanto os botões quando a palavra, além de servir para ir pra proxima ou para voltar
   void gerarAdivinhe(
       {List<Question>? loop, bool next = false, bool left = false}) {
+    resetInactivityTimer();
     if (loop != null) {
       indexQues = 0;
       listQuestions = [];
@@ -410,6 +434,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   }
 
   gerarDica() {
+    resetInactivityTimer();
     //Gera dica, preenchendo algum char aleatório, se ficar completo vai pro proximo
     Question currentQues = listQuestions[indexQues];
     List<QuestionChar> puzzleNoHints = currentQues.puzzles
@@ -417,6 +442,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         .toList();
     if (puzzleNoHints.length > 0 &&
         hintCount < (currentQues.answer.length * 0.6)) {
+      _changeState();
       hintCount++;
       int indexHint = Random().nextInt(puzzleNoHints.length);
       int countTemp = 0;
@@ -441,7 +467,9 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         Future.delayed(Duration(seconds: 1));
         gerarAdivinhe(next: true);
       }
-      setState(() {});
+      setState(() {
+        resetInactivityTimer();
+      });
     }
   }
 
@@ -463,7 +491,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         Future.delayed(Duration(seconds: 1), () {
           falar(currentQues.answer);
         });
-        
+
         setState(() {});
         Future.delayed(Duration(seconds: 10), () {
           gerarAdivinhe(next: true);

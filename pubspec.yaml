@@ -41,6 +41,8 @@ dependencies:
   flutter_tts: ^3.7.0
   path_provider: ^2.0.2
   provider: ^6.0.5
+  confetti: ^0.7.0
+  advanced_icon: ^0.1.2
 
 dev_dependencies:
   flutter_test:

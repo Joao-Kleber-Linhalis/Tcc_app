@@ -7,6 +7,9 @@ falar(String text) async {
       await fluttertts.setLanguage("pt-BR");
       await fluttertts.setPitch(1);
       await fluttertts.speak(text);
+
+      await fluttertts.setSpeechRate(0.5);
+
     } catch (e) {
       print('Erro ao inicializar o flutter_tts: $e');
     }
