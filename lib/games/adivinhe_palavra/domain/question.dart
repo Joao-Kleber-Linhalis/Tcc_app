@@ -4,6 +4,7 @@ class Question {
   String question;
   String pathImage;
   String answer;
+  String info;
   bool isDone = false;
   bool isFull = false;
   List<QuestionChar> puzzles = [];
@@ -13,6 +14,7 @@ class Question {
     required this.question,
     required this.pathImage,
     required this.answer,
+    required this.info,
     this.arrayBtns,
   });
 
@@ -36,6 +38,6 @@ class Question {
   }
 
   Question clone(){
-    return Question(question: question, pathImage: pathImage, answer: answer);
+    return Question(question: question,info: info, pathImage: pathImage, answer: answer);
   }
 }

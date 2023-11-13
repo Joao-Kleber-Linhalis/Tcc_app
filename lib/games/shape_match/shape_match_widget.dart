@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/games/shape_match/domain/class_shape.dart';
+import 'package:quebra_cabecas/uteis/speak.dart';
 
 class ShapeMatchWidget extends StatefulWidget {
   Size size;
@@ -14,9 +15,8 @@ class ShapeMatchWidget extends StatefulWidget {
 
 class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     with SingleTickerProviderStateMixin {
-
   Timer? inactivityTimer;
-  static const int inactivityDuration = 10;    
+  static const int inactivityDuration = 20;
   bool tutorialDialogShown = false;
 
   late Size size;
@@ -30,7 +30,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
   @override
   void initState() {
-    // TODO: implement initState
+    //TODO: implement initState
     super.initState();
     animationController = AnimationController(
       duration: Duration(milliseconds: 300),
@@ -38,10 +38,16 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       vsync: this,
     );
 
-    inactivityTimer = Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+    inactivityTimer =
+        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
       // Exibe o indicador de tutorial após um período de inatividade
       if (!tutorialDialogShown) {
-        showTutorialIndicator();
+        ClassShape? firstUnmatchedShape = findFirstUnmatchedShape();
+        if (firstUnmatchedShape != null) {
+          print(
+              'Exibindo mãozinha para a peça não encaixada: ${firstUnmatchedShape.titleShape}');
+          showTutorialIndicator();
+        }
       }
     });
 
@@ -58,7 +64,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
             animation.value,
           );
 
-          if(animation.isCompleted){
+          if (animation.isCompleted) {
             currentShape.color = Colors.yellow;
 
             offsetTouch = null;
@@ -67,7 +73,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
             animationController.reset();
           }
           setState(() {});
-
         }
       });
   }
@@ -80,9 +85,15 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
   void resetInactivityTimer() {
     inactivityTimer?.cancel();
-    inactivityTimer = Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+    inactivityTimer =
+        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
       if (!tutorialDialogShown) {
-        showTutorialIndicator();
+        ClassShape? firstUnmatchedShape = findFirstUnmatchedShape();
+        if (firstUnmatchedShape != null) {
+          print(
+              'Exibindo mãozinha para a peça não encaixada: ${firstUnmatchedShape.titleShape}');
+          showTutorialIndicator();
+        }
       }
     });
   }
@@ -90,6 +101,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
   // Método para exibir o indicador de tutorial
   void showTutorialIndicator() {
     tutorialDialogShown = true;
+    const String text = "Arraste a peça para o local certo!";
     // Adicione aqui a lógica para exibir o indicador de tutorial
     // Pode ser um modal, uma mensagem na tela, etc.
     // Por exemplo:
@@ -97,31 +109,64 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Dica'),
-          content: Text('Arraste a peça para o local indicado!'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                tutorialDialogShown = false;
-                Navigator.pop(context); // Fechar o indicador de tutorial
-              },
-              child: Text('Entendi'),
+          title: const Text('Dica'),
+          content: Container(
+            width: MediaQuery.of(context)
+                .copyWith()
+                .size
+                .width, // Ajuste conforme necessário
+            height: 250, // Ajuste conforme necessário
+            child: Column(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceAround, // Ajuste conforme necessário
+              children: [
+                InkWell(
+                  child: const FittedBox(
+                    child: Text(text,
+                        style: TextStyle(
+                          fontSize: 20,
+                        )),
+                  ),
+                  onTap: () {
+                    falar(text);
+                  },
+                ),
+                Image.network(
+                  'https://gizmodo.uol.com.br/wp-content/blogs.dir/8/files/2021/02/nyan-cat-1.gif',
+                  width: MediaQuery.of(context)
+                      .copyWith()
+                      .size
+                      .width, // Ajuste conforme necessário
+                  height: 100, // Ajuste conforme necessário
+                  fit: BoxFit.fitWidth,
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    tutorialDialogShown =
+                        false; // Fechar o indicador de tutorial
+                  },
+                  child: const Text(
+                    'Entendi',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         );
       },
     );
   }
 
   ClassShape? findFirstUnmatchedShape() {
-  for (ClassShape shape in classShapes) {
-    if (!shape.isDone) {
-      return shape;
+    for (ClassShape shape in classShapes) {
+      if (!shape.isDone) {
+        return shape;
+      }
     }
+    return null;
   }
-  return null;
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +176,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     return Listener(
       onPointerUp: (event) {
         resetInactivityTimer();
+        print(tutorialDialogShown);
         if (indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -142,6 +188,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       },
       onPointerMove: (event) {
         resetInactivityTimer();
+
         if (offsetTouch != null && indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -160,6 +207,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       },
       child: Container(
         child: Stack(
+          alignment: Alignment.center,
           children: [
             if (classShapes.isNotEmpty)
               ...classShapes.asMap().entries.map((row) {
@@ -167,14 +215,23 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
                 return Positioned(
                   left: shape.defaultPos.dx,
                   top: shape.defaultPos.dy,
-                  child: Container(
-                    color: Colors.grey, //cor da forma
-                    width: shape.childSize.width,
-                    height: shape.childSize.height,
-                    alignment: Alignment.topCenter,
-                    child: Text(
-                      shape.titleShape,
-                      textAlign: TextAlign.center,
+                  child: InkWell(
+                    onTap: () {
+                      falar(shape.titleShape);
+                    },
+                    child: Container(
+                      color: Colors.grey, //cor da forma
+                      width: shape.childSize.width,
+                      height: shape.childSize.height,
+                      alignment: Alignment.center,
+                      child: shape.isDone
+                          ? Center(
+                              child: Text(
+                                shape.titleShape,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            )
+                          : null,
                     ),
                   ),
                 );
@@ -185,33 +242,45 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
               ...classShapes.asMap().entries.map((row) {
                 ClassShape shape = row.value;
                 return Positioned(
-                  left: shape.currentPos.dx,
-                  top: shape.currentPos.dy,
-                  child: Listener(
-                    onPointerDown: (event) {
-                      if (shape.isDone) {
-                        return; //Se já estiver completo, ignora o toque
-                      }
+                    left: shape.currentPos.dx,
+                    top: shape.currentPos.dy,
+                    child: Listener(
+                      onPointerDown: (event) {
+                        if (shape.isDone) {
+                          return; //Se já estiver completo, ignora o toque
+                        }
 
-                      shape.color = Colors.red;
-                      ClassShape temp = classShapes.removeAt(row.key);
-                      classShapes.insert(0, temp);
+                        shape.color = Colors.red;
+                        ClassShape temp = classShapes.removeAt(row.key);
+                        classShapes.insert(0, temp);
 
-                      //Salvar Posição atual
-                      offsetTouch = event.localPosition;
+                        //Salvar Posição atual
+                        offsetTouch = event.localPosition;
 
-                      //Salvar id do shape atual tocado
-                      indexChild = shape.uniqueId;
+                        //Salvar id do shape atual tocado
+                        indexChild = shape.uniqueId;
 
-                      setState(() {});
-                    },
-                    child: Container(
-                      width: shape.childSize.width,
-                      height: shape.childSize.height,
-                      color: Colors.green,
-                    ),
-                  ),
-                );
+                        setState(() {});
+                      },
+                      child: InkWell(
+                        onTap: () {
+                          if (shape.isDone) {
+                            falar(shape.titleShape);
+                          }
+                        },
+                        child: Container(
+                          width: shape.childSize.width,
+                          height: shape.childSize.height,
+                          color: Colors.green,
+                          child: Center(
+                            child: Text(
+                              shape.titleShape,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ));
               }).toList(),
           ],
         ),
@@ -231,36 +300,51 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
     double width = 60;
     double height = 80;
-    double padding = 10;
+    double padding = 5;
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
     classShapes = [];
 
+    // Lista de letras do alfabeto
+    List<String> alphabet = List.generate(
+        26, (index) => String.fromCharCode('A'.codeUnitAt(0) + index));
+
     //calcular quantas formas no width atual mas tbm pode setar um tamanho fixo, como apenas 6 e etc...
     int totalShape = size.width ~/ (width + padding * 2);
-    
 
     width = (size.width - (padding * 2) * totalShape) / totalShape;
     height = width;
     //height = (size.height - (padding * 2) * totalShape) / totalShape;
-
+  
     //calcular pos para cada forma
     for (var i = 0; i < totalShape; i++) {
       Offset offset =
-          Offset(((i + 1) * padding + (width + padding) * i), padding);
+          Offset(((i + 1) * padding + (width + padding) * i), padding + (screenHeight/10));
       Offset currentPos = Offset(((i + 1) * padding + (width + padding) * i),
           size.height - height - (padding * 1));
 
-      ClassShape classShape = ClassShape(
-        titleShape: "Test ${i + 1}",
-        childSize: Size(width, height),
-        currentPos: currentPos,
-        defaultPos: offset,
-        pointOrigin: currentPos,
-        pathImage: "sample image",
-        uniqueId: new Random().nextInt(1000000),
-      );
+      if (alphabet.isNotEmpty) {
+        // Obter uma letra aleatória do alfabeto
+        int randomIndex = Random().nextInt(alphabet.length);
+        String randomLetter = alphabet[randomIndex];
 
-      classShapes.add(classShape);
+        ClassShape classShape = ClassShape(
+          titleShape: randomLetter, // Usar a letra aleatória no título
+          childSize: Size(width, height),
+          currentPos: currentPos,
+          defaultPos: offset,
+          pointOrigin: currentPos,
+          pathImage: "sample image",
+          uniqueId: Random().nextInt(1000000),
+        );
+
+        classShapes.add(classShape);
+
+        // Remover a letra usada para garantir que não seja repetida
+        alphabet.removeAt(randomIndex);
+      }
     }
 
     //Embaralhar

@@ -22,6 +22,16 @@ class _ShapeMatchState extends State<ShapeMatch> {
       body: SafeArea(
         child: Column(
           children: [
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              padding: EdgeInsets.all(10),
+              alignment: Alignment.center,
+              child: Image.asset(
+                "images/shape_match_image.png",
+                fit: BoxFit.contain,
+                //width: MediaQuery.of(context).size.width*0.2,
+              ),
+            ),
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {

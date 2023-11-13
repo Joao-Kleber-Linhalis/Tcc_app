@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:word_search_safety/word_search_safety.dart';
 class AdivinhePalavraWidget extends StatefulWidget {
   final Size size;
   List<Question> listQuestions;
+
   AdivinhePalavraWidget(this.size, this.listQuestions, {super.key});
 
   @override
@@ -17,6 +19,9 @@ class AdivinhePalavraWidget extends StatefulWidget {
 }
 
 class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
+  Timer? inactivityTimer;
+  static const int inactivityDuration = 20;
+  bool tutorialDialogShown = false;
   late Size size;
   late List<Question> listQuestions;
   int indexQues = 0; //Index da questão atual
@@ -28,6 +33,98 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     size = widget.size;
     listQuestions = widget.listQuestions;
     gerarAdivinhe();
+    inactivityTimer =
+        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+      // Exibe o indicador de tutorial após um período de inatividade
+      if (!tutorialDialogShown) {
+        Question? firstUnmatchedShape = currentQuestNotDone();
+        if (firstUnmatchedShape != null) {
+          showTutorialIndicator();
+        }
+      }
+    });
+  }
+
+  void showTutorialIndicator() {
+    tutorialDialogShown = true;
+    const String text = "Pressione as letras para formar a palavra!";
+    // Adicione aqui a lógica para exibir o indicador de tutorial
+    // Pode ser um modal, uma mensagem na tela, etc.
+    // Por exemplo:
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Dica'),
+          content: Container(
+            width: MediaQuery.of(context)
+                .copyWith()
+                .size
+                .width, // Ajuste conforme necessário
+            height: 250, // Ajuste conforme necessário
+            child: Column(
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceAround, // Ajuste conforme necessário
+              children: [
+                InkWell(
+                  child: const FittedBox(
+                    child: Text(text,
+                        style: TextStyle(
+                          fontSize: 20,
+                        )),
+                  ),
+                  onTap: () {
+                    falar(text);
+                  },
+                ),
+                Image.asset(
+                  "images/dica_adivinhe_palavra.gif",
+                  width: MediaQuery.of(context)
+                      .copyWith()
+                      .size
+                      .width, // Ajuste conforme necessário
+                  height: 100, // Ajuste conforme necessário
+                  fit: BoxFit.scaleDown,
+                ),
+                TextButton(
+                  onPressed: () {
+                    resetInactivityTimer();
+                    Navigator.pop(context);
+                    tutorialDialogShown =
+                        false; // Fechar o indicador de tutorial
+                  },
+                  child: const Text(
+                    'Entendi',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Question? currentQuestNotDone() {
+    if (!listQuestions[indexQues].isDone) {
+      return listQuestions[indexQues];
+    }
+    return null;
+  }
+
+  void resetInactivityTimer() {
+    inactivityTimer?.cancel();
+    inactivityTimer =
+        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
+      if (!tutorialDialogShown) {
+        Question? firstUnmatchedShape = currentQuestNotDone();
+        if (firstUnmatchedShape != null) {
+          showTutorialIndicator();
+        }
+      }
+    });
+    setState(() {});
   }
 
   @override
@@ -80,25 +177,28 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
           Expanded(
             child: Container(
               alignment: Alignment.center,
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.only(top: 10, left: 10, right: 10),
               child: Container(
                 alignment: Alignment.center,
                 constraints: BoxConstraints(
                   maxWidth: size.width / 2 * 1.8,
                   //maxHeight: size.width / 2,
                 ),
-                child: Image.network(
+                /*child: Image.network(
                   currentQues.pathImage,
                   fit: BoxFit.contain,
-                ),
+                ),*/
                 //Para fazer a img clickavel e falar a reposta
-                /*child: InkWell(
+                child: InkWell(
                   child: Image.network(
                     currentQues.pathImage,
                     fit: BoxFit.contain,
                   ),
-                  onTap: () => falar(currentQues.answer),
-                ),*/
+                  onTap: () {
+                    falar(currentQues.info);
+                    resetInactivityTimer();
+                  },
+                ),
                 //
               ),
             ),
@@ -121,7 +221,10 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () => falar(currentQues.question),
+              onPressed: () {
+                falar(currentQues.question);
+                resetInactivityTimer();
+              },
               //ainda sem funcionar
             ),
           ),
@@ -149,6 +252,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                     }
                     return InkWell(
                       onTap: () {
+                        resetInactivityTimer();
                         if (puzzle.hintShow || currentQues.isDone) return;
 
                         currentQues.isFull = false;
@@ -168,12 +272,13 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                                 6,
                         height: constraints.biggest.width / 7 - 6,
                         margin: EdgeInsets.all(3),
-                        child:
-                            Text("${puzzle.currentValue ?? ''}".toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                            ),),
+                        child: Text(
+                          "${puzzle.currentValue ?? ''}".toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                     );
                   }).toList(),
@@ -224,6 +329,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                             ),
                           ),
                           onPressed: () {
+                            resetInactivityTimer();
                             if (!statusBtn) {
                               setBtnClick(index);
                             }
@@ -251,12 +357,14 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     } else {
       if (next && indexQues < listQuestions.length - 1) {
         indexQues++;
-        if(listQuestions[indexQues].isDone == false && listQuestions[indexQues].isFull == true){
+        if (listQuestions[indexQues].isDone == false &&
+            listQuestions[indexQues].isFull == true) {
           listQuestions[indexQues].isFull = false;
         }
       } else if (left && indexQues > 0) {
         indexQues--;
-        if(listQuestions[indexQues].isDone == false && listQuestions[indexQues].isFull == true){
+        if (listQuestions[indexQues].isDone == false &&
+            listQuestions[indexQues].isFull == true) {
           listQuestions[indexQues].isFull = false;
         }
       } else if (indexQues >= listQuestions.length - 1) {
@@ -337,7 +445,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     }
   }
 
-  //Função para o click dos botões, chega se está no lugar certo ou errado
+  //Função para o click dos botões, confere se está no lugar certo ou errado
   void setBtnClick(int index) {
     Question currentQues = listQuestions[indexQues];
 
@@ -352,11 +460,12 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 
       if (currentQues.fieldCompleteCorrect()) {
         currentQues.isDone = true;
-        Future.delayed(Duration(seconds: 1),(){
+        Future.delayed(Duration(seconds: 1), () {
           falar(currentQues.answer);
         });
+        
         setState(() {});
-        Future.delayed(Duration(seconds: 10),(){
+        Future.delayed(Duration(seconds: 10), () {
           gerarAdivinhe(next: true);
         });
       }

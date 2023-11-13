@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:quebra_cabecas/data/animal_data.dart';
+import 'package:quebra_cabecas/domain/animal.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/adivinhe_palavra_widget.dart';
-import 'package:quebra_cabecas/games/adivinhe_palavra/data/list_questions.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 
 class AdivinhePalavra extends StatefulWidget {
@@ -13,10 +14,21 @@ class AdivinhePalavra extends StatefulWidget {
 class _AdivinhePalavraState extends State<AdivinhePalavra> {
   GlobalKey<AdivinhePalavraWidgetState> globalKey =
       GlobalKey<AdivinhePalavraWidgetState>();
+  
+  List<Animal> animal = animals;
+  List<Question> listQuestions = [];
 
   @override
   void initState() {
     super.initState();
+    listQuestions = animals.map((animal) {
+      return Question(
+        question: "Qual é o nome do animal?",
+        info: animal.description,
+        pathImage: animal.image,
+        answer: animal.name.toLowerCase(),
+      );
+    }).toList();
   }
 
   @override
