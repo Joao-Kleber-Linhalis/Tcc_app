@@ -20,6 +20,9 @@ class _ShapeMatchState extends State<ShapeMatch> {
     // TODO: implement initState
     super.initState();
     _controllerCenter = ConfettiHelper.createController();
+    Future.delayed(Duration(seconds: 2), () {
+      globalKey.currentState?.generateList();
+    });
   }
 
   @override

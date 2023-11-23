@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:advanced_icon/advanced_icon.dart';
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
@@ -103,10 +102,10 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                 ),
                 TextButton(
                   onPressed: () {
-                    resetInactivityTimer();
                     Navigator.pop(context);
                     tutorialDialogShown =
                         false; // Fechar o indicador de tutorial
+                    resetInactivityTimer();
                   },
                   child: const Text(
                     'Entendi',
@@ -128,10 +127,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     return null;
   }
 
-  void resetInactivityTimer() {
+  Future<void> resetInactivityTimer() async {
     inactivityTimer?.cancel();
-    inactivityTimer?.cancel;
-    setState(() {});
     inactivityTimer =
         Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
       if (!tutorialDialogShown) {
@@ -160,8 +157,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
-                  onTap: ()  {
-                     resetInactivityTimer();
+                  onTap: () {
+                    resetInactivityTimer();
                     gerarDica();
                   },
                   child: AdvancedIcon(
@@ -213,9 +210,11 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                 ),*/
                 //Para fazer a img clickavel e falar a reposta
                 child: InkWell(
-                  child: Image.network(
-                    currentQues.pathImage,
-                    fit: BoxFit.contain,
+                  child: ClipOval(
+                    child: Image.network(
+                      currentQues.pathImage,
+                      fit: BoxFit.contain,
+                    ),
                   ),
                   onTap: () {
                     falar(currentQues.info);
@@ -230,23 +229,18 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
           Container(
             padding: EdgeInsets.all(10),
             alignment: Alignment.center,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(10.0)),
-                backgroundColor: Colors.black,
-              ),
+            child: InkWell(
               child: Text(
                 "${currentQues.question ?? ''}",
                 style: TextStyle(
                   fontSize: 25,
-                  color: Colors.white,
+                  color: Colors.yellow[200],
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onPressed: () {
+              onTap: () {
                 falar(currentQues.question);
-                resetInactivityTimer();
+                resetInactivityTimer;
               },
               //ainda sem funcionar
             ),
@@ -373,7 +367,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 //Função para gerar tanto os botões quando a palavra, além de servir para ir pra proxima ou para voltar
   void gerarAdivinhe(
       {List<Question>? loop, bool next = false, bool left = false}) {
-    resetInactivityTimer();
+     resetInactivityTimer();
     if (loop != null) {
       indexQues = 0;
       listQuestions = [];
@@ -434,6 +428,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   }
 
   gerarDica() {
+    inactivityTimer?.cancel();
     resetInactivityTimer();
     //Gera dica, preenchendo algum char aleatório, se ficar completo vai pro proximo
     Question currentQues = listQuestions[indexQues];
@@ -442,6 +437,10 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         .toList();
     if (puzzleNoHints.length > 0 &&
         hintCount < (currentQues.answer.length * 0.6)) {
+      AssetsAudioPlayer.newPlayer().open(
+        Audio("songs/Tip_song.mp3"),
+        autoStart: true,
+      );
       _changeState();
       hintCount++;
       int indexHint = Random().nextInt(puzzleNoHints.length);
@@ -450,7 +449,9 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         if (!puzzle.hintShow && puzzle.currentIndex == null) countTemp++;
         if (indexHint == countTemp - 1) {
           if (puzzle.hintShow == false) {
-            falar(puzzle.correctValue as String);
+            Future.delayed(Duration(seconds: 1), () {
+              falar(puzzle.correctValue as String);
+            });
           }
           puzzle.hintShow = true;
           puzzle.currentValue = puzzle.correctValue;
@@ -470,6 +471,8 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
       setState(() {
         resetInactivityTimer();
       });
+    } else {
+      falar("Você chegou ao limite de dicas");
     }
   }
 

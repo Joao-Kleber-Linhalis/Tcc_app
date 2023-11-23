@@ -1,4 +1,6 @@
-class AnimalsType{
+import 'package:flutter/material.dart';
+
+class AnimalsType with ChangeNotifier{
  String tableName;
  String bgImage;
 
@@ -9,7 +11,7 @@ class AnimalsType{
 }
 
 
-class Animal{
+class Animal with ChangeNotifier{
   int? id;
   String name;
   String description;

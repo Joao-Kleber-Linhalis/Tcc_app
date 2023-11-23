@@ -43,6 +43,8 @@ dependencies:
   provider: ^6.0.5
   confetti: ^0.7.0
   advanced_icon: ^0.1.2
+  audioplayers: ^5.2.1
+  assets_audio_player: ^3.1.1
 
 dev_dependencies:
   flutter_test:
@@ -69,6 +71,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - images/
+    - songs/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

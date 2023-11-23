@@ -30,11 +30,16 @@ class GameItem extends StatelessWidget {
           ),
         ),
         child: GestureDetector(
-          child: Image.network(
-            game.imageURL,
-            fit: BoxFit.cover,
-          ),
-          onTap: (){
+          child: game.imageURL.startsWith('http')
+              ? Image.network(
+                  game.imageURL,
+                  fit: BoxFit.cover,
+                )
+              : Image.asset(
+                  game.imageURL,
+                  fit: BoxFit.cover,
+                ),
+          onTap: () {
             push(context, game.jogo);
           },
         ),

@@ -14,7 +14,7 @@ class GameGrid extends StatelessWidget {
     final provider = Provider.of<GameList>(context);
     final List<Game> loadedGames =
         showFavoriteOnly ? provider.favoriteItems : provider.items;
-
+  
     return GridView.builder(
       padding: const EdgeInsets.all(10),
       itemCount: loadedGames.length,

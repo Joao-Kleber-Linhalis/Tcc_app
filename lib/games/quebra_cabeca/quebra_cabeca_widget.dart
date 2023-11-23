@@ -62,6 +62,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
   }
 
   Future<void> geradorQuebraCabecaPecasFacil() async {
+    reiniciarQuebraCabeca();
     easyMode = true;
     // Lista do block de imagens (pecas)
     pecas = [];
@@ -143,6 +144,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
 
   //Função que corta a imagem
   Future<void> geradorQuebraCabecaPecas() async {
+    reiniciarQuebraCabeca();
     easyMode = false;
     //Lista do block de imagens (pecas)
     pecas = [];
@@ -152,10 +154,10 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
 
     // quantas peças y = linhas/altura & x = coluna/largura
     //PRECISAM SER IGUAIS
-    int xSplitCount = 5;
-    int ySplitCount = 5;
+    int xSplitCount = 4;
+    int ySplitCount = 4;
 
-    double widthPerBlock = fullImage.height / xSplitCount;
+    double widthPerBlock = fullImage.width / xSplitCount;
     double heightPerBlock = fullImage.height / ySplitCount;
 
     for (var y = 0; y < ySplitCount; y++) {
@@ -181,7 +183,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
         );
 
         double xAxis = widthPerBlock * x;
-        double yAxis = widthPerBlock * y;
+        double yAxis = heightPerBlock * y;
 
         double minSize = math.min(widthPerBlock, heightPerBlock) / 15 * 4;
         offsetCenter = Offset(
@@ -195,7 +197,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
         double widthPerBlockTemp = widthPerBlock +
             (posPecaQuebraCabeca.left == 1 ? minSize : 0) +
             (posPecaQuebraCabeca.right == 1 ? minSize : 0);
-        double heightPerBlockTemp = widthPerBlock +
+        double heightPerBlockTemp = heightPerBlock +
             (posPecaQuebraCabeca.top == 1 ? minSize : 0) +
             (posPecaQuebraCabeca.bottom == 1 ? minSize : 0);
 
@@ -316,6 +318,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
 
                           blockNotifier.notifyListeners();
                           widget.callBackSucess.call();
+                          
                         }
 
                         setState(() {});
@@ -467,11 +470,11 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                                 children: [
                                   peca.pecaQuebraCabecaWidget,
                                   Positioned(
-                                    left: 0,
+                                    left: -5,
                                     top: 0,
                                     child: Container(
-                                      width: 40.0, // Largura do círculo
-                                      height: 40.0, // Altura do círculo
+                                      width: sizePeca.width * 0.5, // Largura do círculo
+                                      height: sizePeca.height * 0.5, // Altura do círculo
                                       decoration: BoxDecoration(
                                         color: Colors.white, // Cor do círculo
                                         shape: BoxShape.circle,
@@ -483,7 +486,7 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                                           style: TextStyle(
                                             color: Colors.black,
                                             fontSize:
-                                                18.0, // Tamanho do número (ajuste conforme necessário)
+                                                sizePeca.width *0.3, // Tamanho do número (ajuste conforme necessário)
                                           ),
                                         ),
                                       ),

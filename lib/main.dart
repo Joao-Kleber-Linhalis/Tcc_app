@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quebra_cabecas/domain/animal_list.dart';
+import 'package:quebra_cabecas/domain/animal_type_list.dart';
 import 'package:quebra_cabecas/domain/game_list.dart';
 import 'package:provider/provider.dart';
 import 'package:quebra_cabecas/screens/game_overview_screen.dart';
@@ -17,7 +19,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => GameList(),
           //Cria a lista de jogos dentro do provider, permitindo acesso dentro de td a arvore de widget
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AnimalList(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => AnimalTypeList(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -25,7 +33,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.purple,
             secondary: Colors.deepOrange,
-            background: Colors.blue,
+            background: Colors.cyan,
           ),
         ),
         //alterer entre ambos para mudar o jogo, ainda não coloquei um menu

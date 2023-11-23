@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quebra_cabecas/components/game_grid.dart';
 
 enum FilterOptions{
@@ -14,6 +15,13 @@ class GameOverviewScreen extends StatefulWidget {
 }
 
 class _GameOverviewScreenState extends State<GameOverviewScreen> {
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+
   bool _showFavoriteOnly = false;
   @override
   Widget build(BuildContext context) {
