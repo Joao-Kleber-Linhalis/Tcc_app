@@ -53,6 +53,7 @@ class _GameOverviewScreenState extends State<GameOverviewScreen> {
             }, 
           ),
         ],
+        automaticallyImplyLeading: false,
       ),
       //Grid pra mostar os jogos
       body: GameGrid(_showFavoriteOnly),
