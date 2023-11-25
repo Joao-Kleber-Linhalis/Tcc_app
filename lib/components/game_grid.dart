@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:quebra_cabecas/components/game_item.dart';
 import 'package:quebra_cabecas/domain/game.dart';
 import 'package:quebra_cabecas/domain/game_list.dart';
+import 'package:quebra_cabecas/uteis/nav.dart';
+
+import 'game_item.dart';
 
 class GameGrid extends StatelessWidget {
   final bool showFavoriteOnly;
@@ -14,20 +16,16 @@ class GameGrid extends StatelessWidget {
     final provider = Provider.of<GameList>(context);
     final List<Game> loadedGames =
         showFavoriteOnly ? provider.favoriteItems : provider.items;
-  
-    return GridView.builder(
-      padding: const EdgeInsets.all(10),
+
+    return ListView.builder(
+      scrollDirection: Axis.horizontal,
       itemCount: loadedGames.length,
-      //Delega o quadradinho de cada item
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
-      itemBuilder: (ctx, index) => ChangeNotifierProvider.value(
-        value: loadedGames[index],
-        child: GameItem(),
+      itemBuilder: (ctx, index) => SizedBox(
+        width: MediaQuery.of(context).size.width,
+        child: ChangeNotifierProvider.value(
+          value: loadedGames[index],
+          child: GameItem(),
+        ),
       ),
     );
   }
