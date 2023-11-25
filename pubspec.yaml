@@ -47,6 +47,7 @@ dependencies:
   assets_audio_player: ^3.1.1
   flutter_svg: ^2.0.9
   path_drawing: ^1.0.1
+  flutter_launcher_icons: ^0.13.1
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,15 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "images/icon-app.png"
+  adaptive_icon_background: "#FFFFFF" # Cor de fundo do ícone adaptativo (Android)
+  adaptive_icon_foreground: "images/icon-app.png"
+  android_resolutions: true
+  ios_resolutions: true
 
 # The following section is specific to Flutter packages.
 flutter:

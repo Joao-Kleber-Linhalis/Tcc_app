@@ -91,6 +91,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                 children: [
                   ElevatedButton(
                     onPressed: () async {
+                      quebraKey.currentState?.reiniciarQuebraCabeca();
                       await quebraKey.currentState?.geradorQuebraCabecaPecas();
                     },
                     child: Text("Gerar"),
@@ -102,12 +103,6 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                     },
                     child: Text("Gerar Fácil"),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      quebraKey.currentState?.reiniciarQuebraCabeca();
-                    },
-                    child: Text("Limpar"),
-                  )
                 ],
               ),
             )
