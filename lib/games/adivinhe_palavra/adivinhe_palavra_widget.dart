@@ -19,7 +19,7 @@ class AdivinhePalavraWidget extends StatefulWidget {
 }
 
 class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
-  Timer? inactivityTimer;
+  late Timer inactivityTimer;
   static const int inactivityDuration = 20;
   bool tutorialDialogShown = false;
   late Size size;
@@ -120,6 +120,12 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    inactivityTimer.cancel();
+  }
+
   Question? currentQuestNotDone() {
     if (!listQuestions[indexQues].isDone) {
       return listQuestions[indexQues];
@@ -128,7 +134,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   }
 
   Future<void> resetInactivityTimer() async {
-    inactivityTimer?.cancel();
+    inactivityTimer.cancel();
     inactivityTimer =
         Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
       if (!tutorialDialogShown) {
@@ -428,7 +434,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   }
 
   gerarDica() {
-    inactivityTimer?.cancel();
+    inactivityTimer.cancel();
     resetInactivityTimer();
     //Gera dica, preenchendo algum char aleatório, se ficar completo vai pro proximo
     Question currentQues = listQuestions[indexQues];

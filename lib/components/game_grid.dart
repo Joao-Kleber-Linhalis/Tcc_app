@@ -16,6 +16,7 @@ class GameGrid extends StatelessWidget {
         showFavoriteOnly ? provider.favoriteItems : provider.items;
   
     return GridView.builder(
+      //scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.all(10),
       itemCount: loadedGames.length,
       //Delega o quadradinho de cada item
