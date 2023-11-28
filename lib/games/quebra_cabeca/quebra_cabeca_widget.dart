@@ -268,239 +268,232 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
           List<PecaQuebraCabeca> pecasDone = pecas
               .where((block) => block.pecaQuebraCabecaWidget.imageBox.isDone)
               .toList();
-          return Container(
-            child: Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    //height: sizeBox.width,
-                    child: Listener(
-                      //Para evento de mover
-                      onPointerUp: (event) {
-                        if (pecasNotDone.length == 0) {
-                          reiniciarQuebraCabeca();
-                          widget.callBackFinish.call();
-                        }
-                        if (_index == -1) {
-                          _carouselController.nextPage(
-                            duration: Duration(
-                                microseconds:
-                                    200), //Velocidade para aparecer a proxima peça
-                          );
-                          setState(() {
-                            //_index = 0;
-                          });
-                        }
-                      },
-                      onPointerMove: (event) {
-                        if (_index == -1) return;
-
-                        Offset offset = event.localPosition - _pos;
-
-                        pecasNotDone[_index].offset = offset;
-
-                        if ((pecasNotDone[_index].offset -
-                                    pecasNotDone[_index].offsetDefault)
-                                .distance <
-                            5) {
-                          //Trazer o bloco/peça para perto da posição padrão dele
-                          //vai ativar esse if e colocar ele no lugar e marcar como feito
-
-                          pecasNotDone[_index]
-                              .pecaQuebraCabecaWidget
-                              .imageBox
-                              .isDone = true;
-                          pecasNotDone[_index].offset =
-                              pecasNotDone[_index].offsetDefault;
-
-                          _index = -1;
-
-                          blockNotifier.notifyListeners();
-                          widget.callBackSucess.call();
-                          
-                        }
-
-                        setState(() {});
-                      },
-                      child: Stack(
-                        children: [
-                          if (pecas.length == 0) ...[
-                            RepaintBoundary(
-                              key: _globalKey,
-                              child: Container(
-                                //color: Colors.white,
-                                //height: double.maxFinite,
-                                //width: double.maxFinite,
-                                child: widget.child,
-                              ),
-                            )
-                          ],
-                          Offstage(
-                            offstage: !(pecas.length > 0),
-                            child: Container(
-                              color: Colors.white, //Cor do background das peças
-                              width: size.width,
-                              height: size.height,
-                              child: CustomPaint(
-                                painter: QuebraCabecaPintorBackground(pecas),
-                                //Pinta o background branco pra deixar a marca de recorte das peças
-                                child: Stack(
-                                  children: [
-                                    // Defina o tamanho do círculo como um terço do tamanho da peça
-                                    if (pecasDone.length > 0)
-                                      ...pecasDone.map(
-                                        (map) {
-                                          final imageSize = map
-                                              .pecaQuebraCabecaWidget
-                                              .imageBox
-                                              .size;
-                                          return Positioned(
-                                            left: map.offset.dx,
-                                            top: map.offset.dy,
-                                            child: Container(
-                                              child: Stack(
-                                                alignment: Alignment.center,
-                                                children: [
-                                                  map.pecaQuebraCabecaWidget,
-                                                  if (easyMode)
-                                                    Positioned(
-                                                      left: 0,
-                                                      top: 0,
-                                                      child: Container(
-                                                        width: 20,
-                                                        height: 20,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: Colors.white,
-                                                          shape:
-                                                              BoxShape.circle,
-                                                        ),
-                                                        child: Center(
-                                                          child: Text(
-                                                            map.numero
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.black,
-                                                              fontSize:
-                                                                  10.0, // Tamanho do número (ajuste conforme necessário)
-                                                            ),
-                                                          ),
-                                                        ),
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Listener(
+                //Para evento de mover
+                onPointerUp: (event) {
+                  if (pecasNotDone.length == 0) {
+                    reiniciarQuebraCabeca();
+                    widget.callBackFinish.call();
+                  }
+                  if (_index == -1) {
+                    _carouselController.nextPage(
+                      duration: Duration(
+                          microseconds:
+                              200), //Velocidade para aparecer a proxima peça
+                    );
+                    setState(() {
+                      //_index = 0;
+                    });
+                  }
+                },
+                onPointerMove: (event) {
+                  if (_index == -1) return;
+                        
+                  Offset offset = event.localPosition - _pos;
+                        
+                  pecasNotDone[_index].offset = offset;
+                        
+                  if ((pecasNotDone[_index].offset -
+                              pecasNotDone[_index].offsetDefault)
+                          .distance <
+                      5) {
+                    //Trazer o bloco/peça para perto da posição padrão dele
+                    //vai ativar esse if e colocar ele no lugar e marcar como feito
+                        
+                    pecasNotDone[_index]
+                        .pecaQuebraCabecaWidget
+                        .imageBox
+                        .isDone = true;
+                    pecasNotDone[_index].offset =
+                        pecasNotDone[_index].offsetDefault;
+                        
+                    _index = -1;
+                        
+                    blockNotifier.notifyListeners();
+                    widget.callBackSucess.call();
+                    
+                  }
+                        
+                  setState(() {});
+                },
+                child: Stack(
+                  children: [
+                    if (pecas.length == 0) ...[
+                      RepaintBoundary(
+                        key: _globalKey,
+                        child: Container(
+                          //color: Colors.white,
+                          //height: double.maxFinite,
+                          //width: double.maxFinite,
+                          child: widget.child,
+                        ),
+                      )
+                    ],
+                    Offstage(
+                      offstage: !(pecas.length > 0),
+                      child: Container(
+                        color: Colors.white, //Cor do background das peças
+                        width: size.width,
+                        height: size.height,
+                        child: CustomPaint(
+                          painter: QuebraCabecaPintorBackground(pecas),
+                          //Pinta o background branco pra deixar a marca de recorte das peças
+                          child: Stack(
+                            children: [
+                              // Defina o tamanho do círculo como um terço do tamanho da peça
+                              if (pecasDone.length > 0)
+                                ...pecasDone.map(
+                                  (map) {
+                                    final imageSize = map
+                                        .pecaQuebraCabecaWidget
+                                        .imageBox
+                                        .size;
+                                    return Positioned(
+                                      left: map.offset.dx,
+                                      top: map.offset.dy,
+                                      child: Container(
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            map.pecaQuebraCabecaWidget,
+                                            if (easyMode)
+                                              Positioned(
+                                                left: 0,
+                                                top: 0,
+                                                child: Container(
+                                                  width: 20,
+                                                  height: 20,
+                                                  decoration:
+                                                      BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape:
+                                                        BoxShape.circle,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      map.numero
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                        color:
+                                                            Colors.black,
+                                                        fontSize:
+                                                            10.0, // Tamanho do número (ajuste conforme necessário)
                                                       ),
                                                     ),
-                                                ],
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    if (pecasNotDone.length > 0)
-                                      ...pecasNotDone.asMap().entries.map(
-                                        (map) {
-                                          return Positioned(
-                                            left: map.value.offset.dx,
-                                            top: map.value.offset.dy,
-                                            child: Offstage(
-                                              offstage: !(_index == map.key),
-                                              child: GestureDetector(
-                                                //Evento de movimento
-                                                onTapDown: (details) {
-                                                  if (map
-                                                      .value
-                                                      .pecaQuebraCabecaWidget
-                                                      .imageBox
-                                                      .isDone) return;
-
-                                                  setState(() {
-                                                    _pos =
-                                                        details.localPosition;
-                                                    _index = map.key;
-                                                  });
-                                                },
-                                                child: Container(
-                                                  child: map.value
-                                                      .pecaQuebraCabecaWidget,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                          ],
+                                        ),
                                       ),
-                                  ],
+                                    );
+                                  },
                                 ),
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  //Container inferior com o carrosel de peças que ainda não foram posicionadas
-                  Container(
-                    color: Colors.black,
-                    height: 100,
-                    child: CarouselSlider(
-                      carouselController: _carouselController,
-                      options: CarouselOptions(
-                        initialPage: _index,
-                        height: 80,
-                        aspectRatio: 1,
-                        viewportFraction: 0.15,
-                        enlargeCenterPage: true,
-                        enableInfiniteScroll: true,
-                        disableCenter: false,
-                        onPageChanged: (index, reason) {
-                          _index = index;
-                          setState(() {});
-                          falar(pecasNotDone[_index].numero.toString());
-                        },
-                      ),
-                      items: pecasNotDone.map((peca) {
-                        Size sizePeca =
-                            peca.pecaQuebraCabecaWidget.imageBox.size;
-                        return FittedBox(
-                          child: Container(
-                              width: sizePeca.width,
-                              height: sizePeca.height,
-                              child: //peca.pecaQuebraCabecaWidget,
-                                  Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  peca.pecaQuebraCabecaWidget,
-                                  Positioned(
-                                    left: -5,
-                                    top: 0,
-                                    child: Container(
-                                      width: sizePeca.width * 0.5, // Largura do círculo
-                                      height: sizePeca.height * 0.5, // Altura do círculo
-                                      decoration: BoxDecoration(
-                                        color: Colors.white, // Cor do círculo
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          peca.numero
-                                              .toString(), // Exibe o número da peça
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontSize:
-                                                sizePeca.width *0.3, // Tamanho do número (ajuste conforme necessário)
+                              if (pecasNotDone.length > 0)
+                                ...pecasNotDone.asMap().entries.map(
+                                  (map) {
+                                    return Positioned(
+                                      left: map.value.offset.dx,
+                                      top: map.value.offset.dy,
+                                      child: Offstage(
+                                        offstage: !(_index == map.key),
+                                        child: GestureDetector(
+                                          //Evento de movimento
+                                          onTapDown: (details) {
+                                            if (map
+                                                .value
+                                                .pecaQuebraCabecaWidget
+                                                .imageBox
+                                                .isDone) return;
+                        
+                                            setState(() {
+                                              _pos =
+                                                  details.localPosition;
+                                              _index = map.key;
+                                            });
+                                          },
+                                          child: Container(
+                                            child: map.value
+                                                .pecaQuebraCabecaWidget,
                                           ),
                                         ),
                                       ),
+                                    );
+                                  },
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              //Container inferior com o carrosel de peças que ainda não foram posicionadas
+              Container(
+                color: Colors.black,
+                height: 100,
+                child: CarouselSlider(
+                  carouselController: _carouselController,
+                  options: CarouselOptions(
+                    initialPage: _index,
+                    height: 80,
+                    aspectRatio: 1,
+                    viewportFraction: 0.15,
+                    enlargeCenterPage: true,
+                    enableInfiniteScroll: true,
+                    disableCenter: false,
+                    onPageChanged: (index, reason) {
+                      _index = index;
+                      setState(() {});
+                      falar(pecasNotDone[_index].numero.toString());
+                    },
+                  ),
+                  items: pecasNotDone.map((peca) {
+                    Size sizePeca =
+                        peca.pecaQuebraCabecaWidget.imageBox.size;
+                    return FittedBox(
+                      child: Container(
+                          width: sizePeca.width,
+                          height: sizePeca.height,
+                          child: //peca.pecaQuebraCabecaWidget,
+                              Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              peca.pecaQuebraCabecaWidget,
+                              Positioned(
+                                left: -5,
+                                top: 0,
+                                child: Container(
+                                  width: sizePeca.width * 0.5, // Largura do círculo
+                                  height: sizePeca.height * 0.5, // Altura do círculo
+                                  decoration: BoxDecoration(
+                                    color: Colors.white, // Cor do círculo
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      peca.numero
+                                          .toString(), // Exibe o número da peça
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize:
+                                            sizePeca.width *0.3, // Tamanho do número (ajuste conforme necessário)
+                                      ),
                                     ),
                                   ),
-                                ],
-                              )),
-                        );
-                      }).toList(),
-                    ),
-                  )
-                ],
-              ),
-            ),
+                                ),
+                              ),
+                            ],
+                          )),
+                    );
+                  }).toList(),
+                ),
+              )
+            ],
           );
         });
   }

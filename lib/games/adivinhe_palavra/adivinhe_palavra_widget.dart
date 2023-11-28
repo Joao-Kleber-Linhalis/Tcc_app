@@ -3,10 +3,12 @@ import 'dart:math';
 import 'package:advanced_icon/advanced_icon.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
 import 'package:word_search_safety/word_search_safety.dart';
+
 
 class AdivinhePalavraWidget extends StatefulWidget {
   final Size size;
@@ -19,9 +21,9 @@ class AdivinhePalavraWidget extends StatefulWidget {
 }
 
 class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
-  late Timer inactivityTimer;
+  final String text = "Pressione as letras para formar a palavra!";
+  final String dicaPath = "images/dica_adivinhe_palavra.gif";
   static const int inactivityDuration = 20;
-  bool tutorialDialogShown = false;
   late Size size;
   late List<Question> listQuestions;
   int indexQues = 0; //Index da questão atual
@@ -47,75 +49,13 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     size = widget.size;
     listQuestions = widget.listQuestions;
     gerarAdivinhe();
-    inactivityTimer =
-        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
-      // Exibe o indicador de tutorial após um período de inatividade
-      if (!tutorialDialogShown) {
-        Question? firstUnmatchedShape = currentQuestNotDone();
-        if (firstUnmatchedShape != null) {
-          showTutorialIndicator();
-        }
-      }
-    });
   }
 
   void showTutorialIndicator() {
-    tutorialDialogShown = true;
-    const String text = "Pressione as letras para formar a palavra!";
-    // Adicione aqui a lógica para exibir o indicador de tutorial
-    // Pode ser um modal, uma mensagem na tela, etc.
-    // Por exemplo:
     showDialog(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Dica'),
-          content: Container(
-            width: MediaQuery.of(context)
-                .copyWith()
-                .size
-                .width, // Ajuste conforme necessário
-            height: 250, // Ajuste conforme necessário
-            child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceAround, // Ajuste conforme necessário
-              children: [
-                InkWell(
-                  child: const FittedBox(
-                    child: Text(text,
-                        style: TextStyle(
-                          fontSize: 20,
-                        )),
-                  ),
-                  onTap: () {
-                    falar(text);
-                  },
-                ),
-                Image.asset(
-                  "images/dica_adivinhe_palavra.gif",
-                  width: MediaQuery.of(context)
-                      .copyWith()
-                      .size
-                      .width, // Ajuste conforme necessário
-                  height: 100, // Ajuste conforme necessário
-                  fit: BoxFit.scaleDown,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    tutorialDialogShown =
-                        false; // Fechar o indicador de tutorial
-                    resetInactivityTimer();
-                  },
-                  child: const Text(
-                    'Entendi',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+        return dica_alert_dialog(dicaText: text,dicaPath: dicaPath,);
       },
     );
   }
@@ -123,7 +63,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   @override
   void dispose() {
     super.dispose();
-    inactivityTimer.cancel();
   }
 
   Question? currentQuestNotDone() {
@@ -133,19 +72,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     return null;
   }
 
-  Future<void> resetInactivityTimer() async {
-    inactivityTimer.cancel();
-    inactivityTimer =
-        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
-      if (!tutorialDialogShown) {
-        Question? firstUnmatchedShape = currentQuestNotDone();
-        if (firstUnmatchedShape != null) {
-          showTutorialIndicator();
-        }
-      }
-    });
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,14 +83,13 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             //Botão de dica , botao de questao anterior, botao de proxima questao respectivamente
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 InkWell(
                   onTap: () {
-                    resetInactivityTimer();
                     gerarDica();
                   },
                   child: AdvancedIcon(
@@ -178,6 +103,14 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                 ),
                 Row(
                   children: [
+                    InkWell(
+                      onTap: () => showTutorialIndicator(),
+                      child: Icon(
+                        Icons.question_mark_outlined,
+                        size: 45,
+                        color: Colors.yellow[200],
+                      ),
+                    ),
                     InkWell(
                       onTap: () => gerarAdivinhe(left: true),
                       child: Icon(
@@ -224,7 +157,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                   ),
                   onTap: () {
                     falar(currentQues.info);
-                    resetInactivityTimer();
                   },
                 ),
                 //
@@ -237,7 +169,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
             alignment: Alignment.center,
             child: InkWell(
               child: Text(
-                "${currentQues.question ?? ''}",
+                currentQues.question,
                 style: TextStyle(
                   fontSize: 25,
                   color: Colors.yellow[200],
@@ -246,7 +178,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
               ),
               onTap: () {
                 falar(currentQues.question);
-                resetInactivityTimer;
               },
               //ainda sem funcionar
             ),
@@ -275,7 +206,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                     }
                     return InkWell(
                       onTap: () {
-                        resetInactivityTimer();
                         if (puzzle.hintShow || currentQues.isDone) return;
 
                         currentQues.isFull = false;
@@ -352,7 +282,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
                             ),
                           ),
                           onPressed: () {
-                            resetInactivityTimer();
                             if (!statusBtn) {
                               setBtnClick(index);
                             }
@@ -373,7 +302,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 //Função para gerar tanto os botões quando a palavra, além de servir para ir pra proxima ou para voltar
   void gerarAdivinhe(
       {List<Question>? loop, bool next = false, bool left = false}) {
-     resetInactivityTimer();
     if (loop != null) {
       indexQues = 0;
       listQuestions = [];
@@ -434,8 +362,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   }
 
   gerarDica() {
-    inactivityTimer.cancel();
-    resetInactivityTimer();
     //Gera dica, preenchendo algum char aleatório, se ficar completo vai pro proximo
     Question currentQues = listQuestions[indexQues];
     List<QuestionChar> puzzleNoHints = currentQues.puzzles
@@ -475,7 +401,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         gerarAdivinhe(next: true);
       }
       setState(() {
-        resetInactivityTimer();
       });
     } else {
       falar("Você chegou ao limite de dicas");

@@ -16,9 +16,6 @@ class ShapeMatchWidget extends StatefulWidget {
 
 class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     with SingleTickerProviderStateMixin {
-  Timer? inactivityTimer;
-  static const int inactivityDuration = 20;
-  bool tutorialDialogShown = false;
 
   late Size size;
   List<ClassShape> classShapes = [];
@@ -39,18 +36,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       vsync: this,
     );
 
-    inactivityTimer =
-        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
-      // Exibe o indicador de tutorial após um período de inatividade
-      if (!tutorialDialogShown) {
-        ClassShape? firstUnmatchedShape = findFirstUnmatchedShape();
-        if (firstUnmatchedShape != null) {
-          print(
-              'Exibindo mãozinha para a peça não encaixada: ${firstUnmatchedShape.titleShape}');
-          showTutorialIndicator();
-        }
-      }
-    });
 
     animation = Tween<double>(begin: 0, end: 1).animate(animationController)
       ..addListener(() {
@@ -80,85 +65,11 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
   @override
   void dispose() {
-    inactivityTimer?.cancel();
     super.dispose();
   }
 
-  void resetInactivityTimer() {
-    inactivityTimer?.cancel();
-    inactivityTimer =
-        Timer.periodic(Duration(seconds: inactivityDuration), (timer) {
-      if (!tutorialDialogShown) {
-        ClassShape? firstUnmatchedShape = findFirstUnmatchedShape();
-        if (firstUnmatchedShape != null) {
-          print(
-              'Exibindo mãozinha para a peça não encaixada: ${firstUnmatchedShape.titleShape}');
-          showTutorialIndicator();
-        }
-      }
-    });
-  }
 
   // Método para exibir o indicador de tutorial
-  void showTutorialIndicator() {
-    tutorialDialogShown = true;
-    const String text = "Arraste a peça para o local certo!";
-    // Adicione aqui a lógica para exibir o indicador de tutorial
-    // Pode ser um modal, uma mensagem na tela, etc.
-    // Por exemplo:
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Dica'),
-          content: Container(
-            width: MediaQuery.of(context)
-                .copyWith()
-                .size
-                .width, // Ajuste conforme necessário
-            height: 250, // Ajuste conforme necessário
-            child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceAround, // Ajuste conforme necessário
-              children: [
-                InkWell(
-                  child: const FittedBox(
-                    child: Text(text,
-                        style: TextStyle(
-                          fontSize: 20,
-                        )),
-                  ),
-                  onTap: () {
-                    falar(text);
-                  },
-                ),
-                Image.network(
-                  'https://gizmodo.uol.com.br/wp-content/blogs.dir/8/files/2021/02/nyan-cat-1.gif',
-                  width: MediaQuery.of(context)
-                      .copyWith()
-                      .size
-                      .width, // Ajuste conforme necessário
-                  height: 100, // Ajuste conforme necessário
-                  fit: BoxFit.fitWidth,
-                ),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    tutorialDialogShown =
-                        false; // Fechar o indicador de tutorial
-                  },
-                  child: const Text(
-                    'Entendi',
-                    style: TextStyle(fontSize: 30),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   ClassShape? findFirstUnmatchedShape() {
     for (ClassShape shape in classShapes) {
@@ -180,8 +91,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
 
     return Listener(
       onPointerUp: (event) {
-        resetInactivityTimer();
-        print(tutorialDialogShown);
         if (indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -192,7 +101,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
         }
       },
       onPointerMove: (event) {
-        resetInactivityTimer();
 
         if (offsetTouch != null && indexChild != null) {
           ClassShape currentShape =
@@ -304,7 +212,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
   }
 
   void generateList() {
-    resetInactivityTimer();
 
     double width = 60;
     double height = 80;
