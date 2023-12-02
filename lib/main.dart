@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.purple,
             secondary: Colors.deepOrange,
-            background: Colors.cyan,
+            background: Colors.cyan,            
           ),
         ),
         home: OpeningScreen(),

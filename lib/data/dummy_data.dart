@@ -1,6 +1,7 @@
 import 'package:quebra_cabecas/games/adivinhe_palavra/adivinhe_palavra.dart';
 import 'package:quebra_cabecas/domain/game.dart';
 import 'package:quebra_cabecas/games/corrida_matematica/corrida_matematica.dart';
+import 'package:quebra_cabecas/games/memory_game/memory_game.dart';
 import 'package:quebra_cabecas/games/quebra_cabeca/puzzle_quebra_cabeca.dart';
 import 'package:quebra_cabecas/games/shape_match/shape_match.dart';
 import 'package:quebra_cabecas/screens/quebra_cabeca_gallery_screen.dart';
@@ -27,6 +28,11 @@ final dummyGames = [
   Game(
     jogo: CorridaMatematica(),
     nome: "Corrida Matemática",
+    imageURL: "images/race-image.png",
+  ),
+  Game(
+    jogo: MemoryGame(),
+    nome: "Jogo da Memória",
     imageURL: "images/race-image.png",
   ),
 ];
