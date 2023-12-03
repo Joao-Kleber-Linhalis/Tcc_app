@@ -5,7 +5,7 @@ import 'package:quebra_cabecas/domain/animal_list.dart';
 import 'package:quebra_cabecas/domain/animal_type_list.dart';
 import 'package:quebra_cabecas/domain/game_list.dart';
 import 'package:provider/provider.dart';
-import 'package:quebra_cabecas/screens/game_overview_screen.dart';
+import 'package:quebra_cabecas/games/color_game/color_game.dart';
 import 'package:quebra_cabecas/screens/opening_screen.dart';
 
 void main() {
@@ -42,7 +42,8 @@ class MyApp extends StatelessWidget {
             background: Colors.cyan,            
           ),
         ),
-        home: OpeningScreen(),
+        home: //OpeningScreen(),
+        ColorGame(),
       ),
     );
   }

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,7 +6,7 @@ import 'package:quebra_cabecas/uteis/speak.dart';
 
 class ShapeMatchWidget extends StatefulWidget {
   final void Function() conffeti;
-  Size size;
+  final Size size;
   ShapeMatchWidget({super.key, required this.size, required this.conffeti});
 
   @override

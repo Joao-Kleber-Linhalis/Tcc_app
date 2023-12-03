@@ -2,7 +2,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
 import 'package:quebra_cabecas/games/shape_match/shape_match_widget.dart';
-import 'package:quebra_cabecas/uteis/widgts/botao.dart';
 import 'package:quebra_cabecas/uteis/widgts/confetti.dart';
 
 class ShapeMatch extends StatefulWidget {
