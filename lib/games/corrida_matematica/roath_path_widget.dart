@@ -3,13 +3,17 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
+import 'package:quebra_cabecas/uteis/nav.dart';
 
 import 'math_question_dialog.dart';
 import 'domain/check_point_class.dart';
 import 'path_road_painter.dart';
 
 class RoadPathWidget extends StatefulWidget {
-  const RoadPathWidget({super.key});
+  final int nivel;
+
+  const RoadPathWidget({super.key, this.nivel = 1});
 
   @override
   State<RoadPathWidget> createState() => _RoadPathWidgetState();
@@ -56,7 +60,7 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
                 context: context,
                 builder: (context) {
                   _animationController.stop();
-                  return MathQuestionDialog();
+                  return MathQuestionDialog(nivel: widget.nivel);
                 },
               ).then((result) {
                 dialogComplete.complete(result);
@@ -66,6 +70,11 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
                 print("Index true: $index");
                 checkPoints[index].setComplete(true);
                 _animationController.forward();
+                if (checkPoints.every((element) => element.complete == true)) {
+                  Future.delayed(Duration(seconds: 1), () {
+                    showResult();
+                  });
+                }
               } else {
                 print(result);
                 _animationController.value -= 0.01;
@@ -74,6 +83,11 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
                   checkPoints[index - 1].setComplete(false);
                 }
                 _animationController.reverse();
+                if (index == 0) {
+                  Future.delayed(Duration(seconds: 1), () {
+                    _animationController.forward();
+                  });
+                }
               }
             },
           );
@@ -82,30 +96,13 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
     _animationController.forward();
   }
 
-  Future<bool> showStartDialog() async {
-    Completer<bool> dialogComplete = Completer<bool>();
+  showResult() {
     showDialog(
-      barrierDismissible: false,
       context: context,
       builder: (context) {
-        return AlertDialog(
-          title: Text('Pronto para começar?'),
-          content: Text('Você está pronto para a corrida?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(true);
-              },
-              child: Text('Sim'),
-            ),
-          ],
-        );
+        return VitoriaAlertDialog(resetGame: aumentarNivel,nivel: widget.nivel,);
       },
-    ).then((result) {
-      dialogComplete.complete(result ?? false);
-    });
-
-    return await dialogComplete.future;
+    );
   }
 
   @override
@@ -114,12 +111,13 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
     super.dispose();
   }
 
-  void _restartWidget(BuildContext context) {
+  void aumentarNivel() {
     dispose();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => RoadPathWidget()),
-    );
+    if (widget.nivel == 4) {
+      push(context, RoadPathWidget(), replace: true);
+    } else {
+      push(context, RoadPathWidget(nivel: widget.nivel + 1), replace: true);
+    }
   }
 
   @override
@@ -162,18 +160,6 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
                 );
               },
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Chama o método para reiniciar o widget
-                  _restartWidget(context);
-                },
-                child: Text('Reiniciar Widget'),
-              ),
-            )
           ],
         ),
       ),

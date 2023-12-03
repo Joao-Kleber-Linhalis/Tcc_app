@@ -5,6 +5,10 @@ import 'package:quebra_cabecas/screens/game_overview_screen.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
 
 class MathQuestionDialog extends StatefulWidget {
+  final int nivel;
+
+  MathQuestionDialog({required this.nivel});
+
   @override
   _MathQuestionDialogState createState() => _MathQuestionDialogState();
 }
@@ -15,6 +19,7 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
   late int correctAnswer;
   late List<int> options;
   late String question;
+  late String operacao;
 
   @override
   void initState() {
@@ -28,28 +33,57 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
     num1 = random.nextInt(10) + 1; // Números entre 1 e 10
     num2 = random.nextInt(10) + 1;
 
-    correctAnswer = num1 + num2;
-
+    switch (widget.nivel) {
+      case 1:
+        // Apenas soma
+        correctAnswer = num1 + num2;
+        question = 'Quanto é $num1 + $num2?';
+        operacao = "soma";
+        break;
+      case 2:
+        // Soma e subtração
+        bool isSubtraction = random.nextBool();
+        correctAnswer = isSubtraction ? num1 - num2 : num1 + num2;
+        String operator = isSubtraction ? '-' : '+';
+        operacao = isSubtraction ? 'subtração' : 'soma';
+        question = 'Quanto é $num1 $operator $num2?';
+        break;
+      case 3:
+        // Multiplicação
+        correctAnswer = num1 * num2;
+        question = 'Quanto é $num1 * $num2?';
+        operacao = "multiplicação";
+        break;
+      case 4:
+        // Multiplicação e divisão
+        bool isDivision = random.nextBool();
+        correctAnswer = isDivision ? num1 ~/ num2 : num1 * num2;
+        String operator = isDivision ? '%' : '*';
+        operacao = isDivision ? 'divisão' : 'multiplicação';
+        question = 'Quanto é $num1 $operator $num2?';
+        break;
+      default:
+        throw ArgumentError('Nível inválido: ${widget.nivel}');
+    }
     // Criar opções aleatórias
     options = [correctAnswer];
 
     while (options.length < 4) {
-      int wrongAnswer = random.nextInt(19) + 1; // Números entre 1 e 19
+      int wrongAnswer = random.nextInt(correctAnswer) + 1; // Números entre 1 e 19
       if (!options.contains(wrongAnswer)) {
         options.add(wrongAnswer);
       }
     }
 
     options.shuffle(); // Embaralhar as opções
-    question = 'Quanto é $num1 + $num2?';
   }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return AlertDialog(
-      title: const Text(
-        'Pergunta de Matemática',
+      title: Text(
+        'Pergunta de $operacao',
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -120,7 +154,10 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
                 builder: (context) => GameOverviewScreen(),
               ),
             ),
-            child: Text("Voltar a Galeria de Jogos"),
+            child: Text(
+              "Voltar a Galeria de Jogos",
+              style: TextStyle(fontSize: size.width / 30),
+            ),
           )
         ],
       ),

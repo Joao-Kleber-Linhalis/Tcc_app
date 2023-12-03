@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
 import 'package:quebra_cabecas/games/memory_game/carta.dart';
 import 'package:quebra_cabecas/screens/game_overview_screen.dart';
 import 'package:quebra_cabecas/uteis/nav.dart';
@@ -27,23 +28,62 @@ class _MemoryGameState extends State<MemoryGame> {
   bool flip = false;
   int time = 0;
   late Timer timer;
+  bool isTimerPaused = false;
 
   @override
   void initState() {
     super.initState();
+    startGame();
+    startTimer();
+  }
+
+  startGame() {
     data = Carta.generateRandomList(widget.size);
     for (var i = 0; i < widget.size; i++) {
       cardStateKeys.add(GlobalKey<FlipCardState>());
       cardFlips.add(true);
     }
-    startTimer();
   }
 
-  startTimer() {
+  void resetGame() {
+    setState(() {
+      data.clear();
+      cardFlips.clear();
+      cardStateKeys.clear();
+      time = 0;
+      previousIndex = -1;
+      flip = false;
+      data = Carta.generateRandomList(widget.size);
+      for (var i = 0; i < widget.size; i++) {
+        cardStateKeys.add(GlobalKey<FlipCardState>());
+        cardFlips.add(true);
+      }
+      // Reinicia o timer
+      timer.cancel();
+      isTimerPaused = false;
+      startTimer();
+    });
+  }
+
+  void startTimer() {
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      setState(() {
-        time += 1;
-      });
+      if (!isTimerPaused) {
+        setState(() {
+          time += 1;
+        });
+      }
+    });
+  }
+
+  void pauseTimer() {
+    setState(() {
+      isTimerPaused = true;
+    });
+  }
+
+  void resumeTimer() {
+    setState(() {
+      isTimerPaused = false;
     });
   }
 
@@ -51,10 +91,19 @@ class _MemoryGameState extends State<MemoryGame> {
     showDialog(
       context: context,
       builder: (context) {
-        return dica_alert_dialog(
+        return DicaAlertDialog(
           dicaText: text,
           dicaPath: dicaPath,
         );
+      },
+    );
+  }
+
+  showResult() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return VitoriaAlertDialog(resetGame: resetGame);
       },
     );
   }
@@ -138,6 +187,7 @@ class _MemoryGameState extends State<MemoryGame> {
                                   previousIndex = -1;
                                   if (cardFlips.every((t) => t == false)) {
                                     print("CABO");
+                                    pauseTimer();
                                     showResult();
                                   }
                                 }
@@ -210,22 +260,5 @@ class _MemoryGameState extends State<MemoryGame> {
     );
   }
 
-  showResult() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Center(child: Text("Venceu!!")),
-        content: Text("Tempo $time"),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              push(context, MemoryGame());
-            },
-            child: Text("Proximo"),
-          ),
-        ],
-      ),
-    );
-  }
+  
 }

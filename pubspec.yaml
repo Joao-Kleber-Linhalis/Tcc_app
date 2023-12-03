@@ -53,6 +53,8 @@ dependencies:
   connectivity_plus: 5.0.2
   get: ^4.6.5
   flip_card: ^0.7.0
+  material_dialogs: ^1.1.4
+  lottie: ^2.7.0
 
 dev_dependencies:
   flutter_test:

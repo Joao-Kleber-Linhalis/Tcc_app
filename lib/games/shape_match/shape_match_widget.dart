@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
 import 'package:quebra_cabecas/games/shape_match/domain/class_shape.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
 
@@ -83,6 +84,15 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     widget.conffeti();
   }
 
+  showResult() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return VitoriaAlertDialog(resetGame: generateList);
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     size = widget.size;
@@ -118,6 +128,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
         bool todosConcluidos = classShapes.every((shape) => shape.isDone);
            if(todosConcluidos){
             _confetti();
+            showResult();
            }
       },
       child: Container(

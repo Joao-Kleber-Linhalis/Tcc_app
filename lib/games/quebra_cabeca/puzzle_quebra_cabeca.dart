@@ -2,6 +2,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
 import 'package:quebra_cabecas/domain/animal.dart';
 import 'package:quebra_cabecas/games/quebra_cabeca/quebra_cabeca_widget.dart';
 import 'package:quebra_cabecas/uteis/widgts/confetti.dart';
@@ -54,10 +55,19 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
     showDialog(
       context: context,
       builder: (context) {
-        return dica_alert_dialog(
+        return DicaAlertDialog(
           dicaText: text,
           dicaPath: dicaPath,
         );
+      },
+    );
+  }
+
+  showResult() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return VitoriaAlertDialog(resetGame: _aumentaIndex,next: true,);
       },
     );
   }
@@ -125,9 +135,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                     child: QuebraCabecaWidget(
                       callBackFinish: () {
                         _exibirEfeito();
-                        Future.delayed(Duration(seconds: 5), () {
-                          _aumentaIndex();
-                        });
+                        showResult();
                       },
                       callBackSucess: () {
                         AssetsAudioPlayer.newPlayer().open(
@@ -152,18 +160,18 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                     children: [
                       ElevatedButton(
                         onPressed: () async {
+                          await quebraKey.currentState
+                              ?.geradorQuebraCabecaPecasFacil();
+                        },
+                        child: Text("Fácil"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
                           quebraKey.currentState?.reiniciarQuebraCabeca();
                           await quebraKey.currentState
                               ?.geradorQuebraCabecaPecas();
                         },
-                        child: Text("Gerar"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await quebraKey.currentState
-                              ?.geradorQuebraCabecaPecasFacil();
-                        },
-                        child: Text("Gerar Fácil"),
+                        child: Text("Normal"),
                       ),
                     ],
                   ),

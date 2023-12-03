@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
-import 'package:quebra_cabecas/uteis/nav.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
+
+import 'color_name.dart';
 
 class ColorGame extends StatefulWidget {
   const ColorGame({super.key});
@@ -13,7 +15,7 @@ class ColorGame extends StatefulWidget {
 
 class _ColorGameState extends State<ColorGame> {
   Map<String, bool> score = {};
-  late  Map choices;
+  late Map choices;
   final String text = "Pressione as letras para formar a palavra!";
   final String dicaPath = "images/dica_adivinhe_palavra.gif";
 
@@ -64,10 +66,19 @@ class _ColorGameState extends State<ColorGame> {
     showDialog(
       context: context,
       builder: (context) {
-        return dica_alert_dialog(
+        return DicaAlertDialog(
           dicaText: text,
           dicaPath: dicaPath,
         );
+      },
+    );
+  }
+
+  void showVitoriaIndicator() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return VitoriaAlertDialog(resetGame: resetGame);
       },
     );
   }
@@ -78,15 +89,14 @@ class _ColorGameState extends State<ColorGame> {
   }
 
   void resetGame() {
-  setState(() {
-    // Regere as escolhas
-    choices = generateRandomColorMap(6);
+    setState(() {
+      // Gera novamente as escolhas
+      choices = generateRandomColorMap(6);
 
-    // Limpa o mapa de pontuação
-    score.clear();
-
-  });
-}
+      // Limpa o mapa de pontuação
+      score.clear();
+    });
+  }
 
   @override
   void initState() {
@@ -106,7 +116,7 @@ class _ColorGameState extends State<ColorGame> {
           children: [
             Container(
               padding: EdgeInsets.all(10),
-              //Botão de dica , botao de questao anterior, botao de proxima questao respectivamente
+              //Botão de Tutorial
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -121,6 +131,7 @@ class _ColorGameState extends State<ColorGame> {
                 ],
               ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.1,),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -132,17 +143,17 @@ class _ColorGameState extends State<ColorGame> {
                       Color choiseColorValue = entry.value;
                       return Draggable<String>(
                         data: choiseColor,
-                        child: ColorName(
-                          colorName:
-                              score[choiseColor] == true ? '✅' : choiseColor,
-                          color: choiseColorValue,
-                        ),
                         feedback: ColorName(
                           colorName: choiseColor,
                           color: choiseColorValue,
                         ),
                         childWhenDragging:
                             ColorName(colorName: "❔", color: Colors.white),
+                        child: ColorName(
+                          colorName:
+                              score[choiseColor] == true ? '✅' : choiseColor,
+                          color: choiseColorValue,
+                        ),
                       );
                     }).toList()),
                 Column(
@@ -197,67 +208,14 @@ class _ColorGameState extends State<ColorGame> {
       },
       onWillAcceptWithDetails: (details) => details.data == colorName,
       onAcceptWithDetails: (details) {
-        print("entrou");
         setState(() {
           score[colorName] = true;
         });
         if (allColorsPlacedCorrectly()) {
-          // Todos os elementos foram colocados corretamente, faça algo aqui
-          print("Parabéns! Você concluiu o jogo!");
-          showResult();
+          // Jogo concluido
+          showVitoriaIndicator();
         }
       },
-    );
-  }
-
-  showResult() {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Center(child: Text("Venceu!!")),
-        actions: [
-          ElevatedButton(
-            onPressed: () {
-              pop(context);
-              resetGame();
-            },
-            child: Text("Denovo"),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class ColorName extends StatelessWidget {
-  final String colorName;
-  final Color color;
-
-  ColorName({required this.colorName, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.4,
-        height: MediaQuery.of(context).size.height * 0.1,
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(10),
-        margin: EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10.0),
-        ),
-        child: Text(
-          colorName,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: color, // Use a cor fornecida
-            fontSize: 30,
-          ),
-        ),
-      ),
     );
   }
 }

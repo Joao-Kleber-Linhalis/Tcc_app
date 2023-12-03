@@ -42,8 +42,7 @@ class MyApp extends StatelessWidget {
             background: Colors.cyan,            
           ),
         ),
-        home: //OpeningScreen(),
-        ColorGame(),
+        home: ColorGame(),
       ),
     );
   }

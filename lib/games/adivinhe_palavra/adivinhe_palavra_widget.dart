@@ -4,6 +4,7 @@ import 'package:advanced_icon/advanced_icon.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:quebra_cabecas/components/dica_alert_dialog.dart';
+import 'package:quebra_cabecas/components/vitoria_alert_dialog.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question.dart';
 import 'package:quebra_cabecas/games/adivinhe_palavra/domain/question_char.dart';
 import 'package:quebra_cabecas/uteis/speak.dart';
@@ -13,6 +14,7 @@ import 'package:word_search_safety/word_search_safety.dart';
 class AdivinhePalavraWidget extends StatefulWidget {
   final Size size;
   List<Question> listQuestions;
+  
 
   AdivinhePalavraWidget(this.size, this.listQuestions, {super.key});
 
@@ -28,6 +30,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   late List<Question> listQuestions;
   int indexQues = 0; //Index da questão atual
   int hintCount = 0;
+  late List<Question> cloneList;
 
   AdvancedIconState _state = AdvancedIconState.primary;
 
@@ -47,6 +50,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   void initState() {
     super.initState();
     size = widget.size;
+    cloneList = widget.listQuestions.map((e) => e.clone()).toList();
     listQuestions = widget.listQuestions;
     gerarAdivinhe();
   }
@@ -55,9 +59,22 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
     showDialog(
       context: context,
       builder: (context) {
-        return dica_alert_dialog(dicaText: text,dicaPath: dicaPath,);
+        return DicaAlertDialog(dicaText: text,dicaPath: dicaPath,);
       },
     );
+  }
+
+  showResult() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return VitoriaAlertDialog(resetGame: resetGame);
+      },
+    );
+  }
+
+  resetGame(){
+    gerarAdivinhe(loop: cloneList);
   }
 
   @override
@@ -409,6 +426,7 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
 
   //Função para o click dos botões, confere se está no lugar certo ou errado
   void setBtnClick(int index) {
+    int currentIndex = indexQues;
     Question currentQues = listQuestions[indexQues];
 
     int currentIndexEmpty =
@@ -427,8 +445,13 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
         });
 
         setState(() {});
-        Future.delayed(Duration(seconds: 10), () {
-          gerarAdivinhe(next: true);
+        Future.delayed(Duration(seconds: 2), () {
+          if(listQuestions.every((element) => element.isDone == true)){
+            showResult();
+          }
+          else if(currentIndex == indexQues){
+            gerarAdivinhe(next: true);
+          }
         });
       }
       setState(() {});

@@ -41,7 +41,7 @@ class _ShapeMatchState extends State<ShapeMatch> {
     showDialog(
       context: context,
       builder: (context) {
-        return dica_alert_dialog(
+        return DicaAlertDialog(
           dicaText: text,
           dicaPath: dicaPath,
         );

@@ -153,9 +153,8 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
     fullImage = await _getImageFromWidget();
 
     // quantas peças y = linhas/altura & x = coluna/largura
-    //PRECISAM SER IGUAIS
-    int xSplitCount = 4;
-    int ySplitCount = 4;
+    int xSplitCount = 2;
+    int ySplitCount = 2;
 
     double widthPerBlock = fullImage.width / xSplitCount;
     double heightPerBlock = fullImage.height / ySplitCount;
