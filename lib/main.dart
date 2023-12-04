@@ -5,6 +5,8 @@ import 'package:quebra_cabecas/domain/animal_list.dart';
 import 'package:quebra_cabecas/domain/animal_type_list.dart';
 import 'package:quebra_cabecas/domain/game_list.dart';
 import 'package:provider/provider.dart';
+import 'package:quebra_cabecas/games/corrida_matematica/corrida_matematica.dart';
+import 'package:quebra_cabecas/games/corrida_matematica/dica_screen.dart';
 import 'package:quebra_cabecas/screens/opening_screen.dart';
 
 void main() {

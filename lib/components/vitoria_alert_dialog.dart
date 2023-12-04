@@ -19,7 +19,7 @@ class VitoriaAlertDialog extends StatelessWidget {
     if(next){
       win = "Você concluiu o Quebra-cabeça";
     }else if(nivel > 0 && nivel != 4){
-      win = "Você conclui o nivel $nivel de 4";
+      win = "Você concluiu o nivel $nivel de 4";
     } else{
       win = "Você concluiu o jogo";
       secondIcon = Icons.refresh;

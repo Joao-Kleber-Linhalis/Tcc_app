@@ -20,6 +20,7 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
   late List<int> options;
   late String question;
   late String operacao;
+  bool? isAnswerCorrect;
 
   @override
   void initState() {
@@ -69,7 +70,8 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
     options = [correctAnswer];
 
     while (options.length < 4) {
-      int wrongAnswer = random.nextInt(correctAnswer) + 1; // Números entre 1 e 19
+      int wrongAnswer =
+          random.nextInt(correctAnswer) + 1; // Números entre 1 e 19
       if (!options.contains(wrongAnswer)) {
         options.add(wrongAnswer);
       }
@@ -110,33 +112,40 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: options
+                .asMap()
+                .entries
                 .map(
-                  (option) => Container(
+                  (entry) => Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: _getBackgroundColor(entry.value),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     margin: EdgeInsets.symmetric(vertical: 8.0),
-                    //color: Colors.white,
                     child: Row(
                       children: [
                         Expanded(
                           child: InkWell(
                             onTap: () {
-                              Navigator.pop(context, option == correctAnswer);
+                              setState(() {
+                                isAnswerCorrect = entry.value == correctAnswer;
+                              });
+                              Future.delayed(Duration(milliseconds: 500), () {
+                                Navigator.pop(context, isAnswerCorrect);
+                              });
                             },
                             child: Text(
-                              '$option',
+                              '${entry.value}',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: size.width / 25),
+                                fontWeight: FontWeight.bold,
+                                fontSize: size.width / 25,
+                              ),
                             ),
                           ),
                         ),
                         IconButton(
                           onPressed: () {
-                            falar('$option');
+                            falar('${entry.value}');
                           },
                           icon: Icon(Icons.volume_up),
                         )
@@ -162,5 +171,19 @@ class _MathQuestionDialogState extends State<MathQuestionDialog> {
         ],
       ),
     );
+  }
+
+  Color _getBackgroundColor(int option) {
+    if (isAnswerCorrect == null) {
+      return Colors.white; // Cor padrão antes da resposta ser dada
+    } else if (isAnswerCorrect! && option == correctAnswer) {
+      return Colors.green; // Resposta correta
+    } else if (!isAnswerCorrect! && option == correctAnswer) {
+      return Colors.red; // Resposta correta, mas escolhida incorretamente
+    } else if (!isAnswerCorrect! && option != correctAnswer) {
+      return Colors.white; // Resposta incorreta
+    } else {
+      return Colors.white; // Outro caso (não deve acontecer)
+    }
   }
 }
