@@ -14,8 +14,8 @@ class ShapeMatch extends StatefulWidget {
 class _ShapeMatchState extends State<ShapeMatch> {
   late ConfettiController _controllerCenter;
   GlobalKey<ShapeMatchWidgetState> globalKey = GlobalKey();
-  final String text = "Pressione as letras para formar a palavra!";
-  final String dicaPath = "images/dica_adivinhe_palavra.gif";
+  final String text = "Arraste as letras para o lugar certo!";
+  final String dicaPath = "images/dica/dica_shape_match.gif";
 
   @override
   void initState() {

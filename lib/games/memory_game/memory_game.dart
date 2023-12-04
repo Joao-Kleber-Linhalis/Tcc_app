@@ -18,8 +18,8 @@ class MemoryGame extends StatefulWidget {
 }
 
 class _MemoryGameState extends State<MemoryGame> {
-  final String text = "Pressione as letras para formar a palavra!";
-  final String dicaPath = "images/dica_adivinhe_palavra.gif";
+  final String text = "Selecione as cartas com mesmo número!";
+  final String dicaPath = "images/dica/dica_memory.gif";
 
   List<GlobalKey<FlipCardState>> cardStateKeys = [];
   List<bool> cardFlips = [];

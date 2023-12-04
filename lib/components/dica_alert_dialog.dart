@@ -67,9 +67,7 @@ class DicaAlertDialog extends StatelessWidget {
               SizedBox(height: 20),
               Image.asset(
                 dicaPath,
-                width: MediaQuery.of(context).size.width * 0.8,
-                height: 100,
-                fit: BoxFit.scaleDown,
+                fit: BoxFit.fill,
               ),
               SizedBox(height: 20),
               TextButton(

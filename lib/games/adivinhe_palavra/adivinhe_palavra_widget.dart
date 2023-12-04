@@ -24,7 +24,7 @@ class AdivinhePalavraWidget extends StatefulWidget {
 
 class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   final String text = "Pressione as letras para formar a palavra!";
-  final String dicaPath = "images/dica_adivinhe_palavra.gif";
+  final String dicaPath = "images/dica/dica_adivinhe_palavra.gif";
   static const int inactivityDuration = 20;
   late Size size;
   late List<Question> listQuestions;

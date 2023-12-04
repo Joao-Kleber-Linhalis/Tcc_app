@@ -20,8 +20,9 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
   GlobalKey<QuebraCabecaWidgetState> quebraKey =
       GlobalKey<QuebraCabecaWidgetState>();
   late int index;
-  final String text = "Pressione as letras para formar a palavra!";
-  final String dicaPath = "images/dica_adivinhe_palavra.gif";
+  final String text = "Arraste a peça para o lugar certo";
+  final String dicaPath = "images/dica/dica_quebra_cabeca.gif";
+  int qtdPecas = 5;
 
   @override
   void initState() {
@@ -67,7 +68,10 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
     showDialog(
       context: context,
       builder: (context) {
-        return VitoriaAlertDialog(resetGame: _aumentaIndex,next: true,);
+        return VitoriaAlertDialog(
+          resetGame: _aumentaIndex,
+          next: true,
+        );
       },
     );
   }
@@ -76,7 +80,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Quebra Cabeça"),
+        title: const Text("Quebra Cabeça"),
         centerTitle: true,
       ),
       body: Container(
@@ -86,7 +90,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 //Botão de dica , botao de questao anterior, botao de proxima questao respectivamente
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -130,7 +134,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(border: Border.all(width: 2)),
                     child: QuebraCabecaWidget(
                       callBackFinish: () {
@@ -144,6 +148,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                         );
                       },
                       key: quebraKey,
+                      qtdPecas: qtdPecas,
                       child: Padding(
                         padding: const EdgeInsets.all(
                             0.0), //Margen da imagem, mas sai no quebra-cabeça...
@@ -159,11 +164,46 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       ElevatedButton(
+
                         onPressed: () async {
                           await quebraKey.currentState
                               ?.geradorQuebraCabecaPecasFacil();
                         },
-                        child: Text("Fácil"),
+                        child: const Text("Fácil"),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8)),
+                        child: DropdownButton<int>(
+                          dropdownColor: Colors.white,
+                          value:
+                              qtdPecas, // Deve ser uma variável de estado que controla o valor selecionado
+                          onChanged: (int? value) {
+                            setState(() {
+                              qtdPecas = value!;
+                            });
+                          },
+                          items: const [
+                            DropdownMenuItem<int>(
+                              value: 2,
+                              child: Text('2x2'),
+                            ),
+                            DropdownMenuItem<int>(
+                              value: 3,
+                              child: Text('3x3'),
+                            ),
+                            DropdownMenuItem<int>(
+                              value: 4,
+                              child: Text('4x4'),
+                            ),
+                            DropdownMenuItem<int>(
+                              value: 5,
+                              child: Text('5x5'),
+                            ),
+                          ],
+                        ),
                       ),
                       ElevatedButton(
                         onPressed: () async {
@@ -171,7 +211,7 @@ class _PuzzleQuebraCabecaState extends State<PuzzleQuebraCabeca> {
                           await quebraKey.currentState
                               ?.geradorQuebraCabecaPecas();
                         },
-                        child: Text("Normal"),
+                        child: const Text("Normal"),
                       ),
                     ],
                   ),

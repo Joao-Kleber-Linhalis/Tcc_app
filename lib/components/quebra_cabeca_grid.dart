@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:quebra_cabecas/components/quebra_cabeca_item.dart';
-import 'package:quebra_cabecas/data/animal_data.dart';
 import 'package:quebra_cabecas/domain/animal.dart';
 import 'package:quebra_cabecas/domain/animal_type_list.dart';
 

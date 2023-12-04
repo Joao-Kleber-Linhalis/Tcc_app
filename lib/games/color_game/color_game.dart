@@ -16,8 +16,8 @@ class ColorGame extends StatefulWidget {
 class _ColorGameState extends State<ColorGame> {
   Map<String, bool> score = {};
   late Map choices;
-  final String text = "Pressione as letras para formar a palavra!";
-  final String dicaPath = "images/dica_adivinhe_palavra.gif";
+  final String text = "Arraste as cores para o lugar certo!";
+  final String dicaPath = "images/dica/dica_color.gif";
 
   int seed = 0;
 
@@ -131,7 +131,9 @@ class _ColorGameState extends State<ColorGame> {
                 ],
               ),
             ),
-            SizedBox(height: MediaQuery.of(context).size.height*0.1,),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.1,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -191,7 +193,14 @@ class _ColorGameState extends State<ColorGame> {
             ),
             width: MediaQuery.of(context).size.width * 0.4,
             height: MediaQuery.of(context).size.height * 0.1,
-            child: Text("Acertou!"),
+            child: Text(
+              "Acertou!",
+              style: TextStyle(
+                color: cor,
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           );
         } else {
           return Container(

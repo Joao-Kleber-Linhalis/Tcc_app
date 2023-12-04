@@ -5,7 +5,6 @@ import 'package:quebra_cabecas/domain/animal_list.dart';
 import 'package:quebra_cabecas/domain/animal_type_list.dart';
 import 'package:quebra_cabecas/domain/game_list.dart';
 import 'package:provider/provider.dart';
-import 'package:quebra_cabecas/games/color_game/color_game.dart';
 import 'package:quebra_cabecas/screens/opening_screen.dart';
 
 void main() {
@@ -21,9 +20,9 @@ class MyApp extends StatelessWidget {
     final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
     return MultiProvider(
       providers: [
+        //Cria a lista de x dentro do provider, permitindo acesso dentro de td a arvore de widget
         ChangeNotifierProvider(
           create: (_) => GameList(),
-          //Cria a lista de jogos dentro do provider, permitindo acesso dentro de td a arvore de widget
         ),
         ChangeNotifierProvider(
           create: (_) => AnimalList(),
@@ -39,10 +38,10 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             primary: Colors.purple,
             secondary: Colors.deepOrange,
-            background: Colors.cyan,            
+            background: Colors.cyan,
           ),
         ),
-        home: ColorGame(),
+        home: OpeningScreen(),
       ),
     );
   }

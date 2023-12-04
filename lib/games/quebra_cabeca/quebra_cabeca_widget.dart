@@ -15,11 +15,12 @@ class QuebraCabecaWidget extends StatefulWidget {
   final Widget child;
   final Function() callBackFinish;
   final Function() callBackSucess;
+  final int qtdPecas;
   QuebraCabecaWidget(
       {super.key,
       required this.child,
       required this.callBackFinish,
-      required this.callBackSucess});
+      required this.callBackSucess, required this.qtdPecas});
 
   @override
   State<QuebraCabecaWidget> createState() => QuebraCabecaWidgetState();
@@ -71,9 +72,8 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
     fullImage = await _getImageFromWidget();
 
     // Quantas peças y = linhas/altura & x = coluna/largura
-    // Precisam ser iguais
-    int xSplitCount = 5;
-    int ySplitCount = 5;
+    int xSplitCount = widget.qtdPecas;
+    int ySplitCount = widget.qtdPecas;
 
     double widthPerBlock = fullImage.width / xSplitCount;
     double heightPerBlock = fullImage.height / ySplitCount;
@@ -153,8 +153,8 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
     fullImage = await _getImageFromWidget();
 
     // quantas peças y = linhas/altura & x = coluna/largura
-    int xSplitCount = 2;
-    int ySplitCount = 2;
+    int xSplitCount = widget.qtdPecas;
+    int ySplitCount = widget.qtdPecas;
 
     double widthPerBlock = fullImage.width / xSplitCount;
     double heightPerBlock = fullImage.height / ySplitCount;

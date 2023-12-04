@@ -16,7 +16,6 @@ class ShapeMatchWidget extends StatefulWidget {
 
 class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     with SingleTickerProviderStateMixin {
-
   late Size size;
   List<ClassShape> classShapes = [];
   Offset? offsetTouch;
@@ -35,7 +34,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
       value: 0,
       vsync: this,
     );
-
 
     animation = Tween<double>(begin: 0, end: 1).animate(animationController)
       ..addListener(() {
@@ -68,7 +66,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     super.dispose();
   }
 
-
   // Método para exibir o indicador de tutorial
 
   ClassShape? findFirstUnmatchedShape() {
@@ -80,7 +77,7 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     return null;
   }
 
-  _confetti(){
+  _confetti() {
     widget.conffeti();
   }
 
@@ -110,7 +107,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
         }
       },
       onPointerMove: (event) {
-
         if (offsetTouch != null && indexChild != null) {
           ClassShape currentShape =
               classShapes.firstWhere((shape) => shape.uniqueId == indexChild);
@@ -126,10 +122,10 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
           setState(() {});
         }
         bool todosConcluidos = classShapes.every((shape) => shape.isDone);
-           if(todosConcluidos){
-            _confetti();
-            showResult();
-           }
+        if (todosConcluidos) {
+          _confetti();
+          showResult();
+        }
       },
       child: Container(
         child: Stack(
@@ -146,7 +142,10 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
                       falar(shape.titleShape);
                     },
                     child: Container(
-                      color: Colors.grey, //cor da forma
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.white,
+                      ), //cor da forma
                       width: shape.childSize.width,
                       height: shape.childSize.height,
                       alignment: Alignment.center,
@@ -154,7 +153,10 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
                           ? Center(
                               child: Text(
                                 shape.titleShape,
-                                style: TextStyle(color: Colors.black),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: shape.childSize.width * 0.3),
                               ),
                             )
                           : null,
@@ -197,11 +199,17 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
                         child: Container(
                           width: shape.childSize.width,
                           height: shape.childSize.height,
-                          color: Colors.green,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.green,
+                          ),
                           child: Center(
                             child: Text(
                               shape.titleShape,
                               textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: shape.childSize.width * 0.3),
                             ),
                           ),
                         ),
@@ -222,7 +230,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
   }
 
   void generateList() {
-
     double width = 60;
     double height = 80;
     double padding = 5;
@@ -242,11 +249,11 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     width = (size.width - (padding * 2) * totalShape) / totalShape;
     height = width;
     //height = (size.height - (padding * 2) * totalShape) / totalShape;
-  
+
     //calcular pos para cada forma
     for (var i = 0; i < totalShape; i++) {
-      Offset offset =
-          Offset(((i + 1) * padding + (width + padding) * i), padding + (screenHeight/10));
+      Offset offset = Offset(((i + 1) * padding + (width + padding) * i),
+          padding + (screenHeight / 10));
       Offset currentPos = Offset(((i + 1) * padding + (width + padding) * i),
           size.height - height - (padding * 1));
 
