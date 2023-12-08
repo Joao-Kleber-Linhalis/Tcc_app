@@ -167,7 +167,6 @@ class _MemoryGameState extends State<MemoryGame> {
                         itemBuilder: (context, index) => FlipCard(
                           key: cardStateKeys[index],
                           onFlip: () {
-                            print(index);
                             if (!flip) {
                               flip = true;
                               previousIndex = index;
@@ -183,10 +182,8 @@ class _MemoryGameState extends State<MemoryGame> {
                                 } else {
                                   cardFlips[previousIndex] = false;
                                   cardFlips[index] = false;
-                                  print("match");
                                   previousIndex = -1;
                                   if (cardFlips.every((t) => t == false)) {
-                                    print("CABO");
                                     pauseTimer();
                                     showResult();
                                   }

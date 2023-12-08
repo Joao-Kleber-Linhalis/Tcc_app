@@ -20,12 +20,10 @@ class _OpeningScreenState extends State<OpeningScreen> {
       (value) async => {
         if (await ConnectivityWrapper.instance.isConnected)
           {
-            print("Com internet"),
             push(context, GameOverviewScreen(), replace: true),
           }
         else
           {
-            print("Sem internet"),
             ScaffoldMessenger.of(context)
               ..hideCurrentSnackBar()
               ..showSnackBar(snackBar),

@@ -67,7 +67,6 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
               });
               bool? result = await dialogComplete.future;
               if (result == true) {
-                print("Index true: $index");
                 checkPoints[index].setComplete(true);
                 _animationController.forward();
                 if (checkPoints.every((element) => element.complete == true)) {
@@ -76,9 +75,7 @@ class _RoadPathWidgetState extends State<RoadPathWidget>
                   });
                 }
               } else {
-                print(result);
                 _animationController.value -= 0.01;
-                print("Index false: $index");
                 if (index > 0) {
                   checkPoints[index - 1].setComplete(false);
                 }

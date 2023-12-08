@@ -11,10 +11,11 @@ import 'package:quebra_cabecas/uteis/speak.dart';
 import 'package:word_search_safety/word_search_safety.dart';
 
 
+// ignore: must_be_immutable
 class AdivinhePalavraWidget extends StatefulWidget {
   final Size size;
-  List<Question> listQuestions;
-  
+   List<Question> listQuestions;
+   
 
   AdivinhePalavraWidget(this.size, this.listQuestions, {super.key});
 
@@ -93,7 +94,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
   @override
   Widget build(BuildContext context) {
     Question currentQues = listQuestions[indexQues]; //Pega a questão atual
-    //print(currentQues);
 
     return Container(
       width: double.maxFinite,
@@ -404,7 +404,6 @@ class AdivinhePalavraWidgetState extends State<AdivinhePalavraWidget> {
           }
           puzzle.hintShow = true;
           puzzle.currentValue = puzzle.correctValue;
-          print("current ${puzzle.correctValue}");
           puzzle.currentIndex = currentQues.arrayBtns!
               .indexWhere((btn) => btn == puzzle.correctValue);
         }

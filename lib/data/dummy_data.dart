@@ -1,7 +1,6 @@
 import 'package:quebra_cabecas/games/adivinhe_palavra/adivinhe_palavra.dart';
 import 'package:quebra_cabecas/domain/game.dart';
 import 'package:quebra_cabecas/games/color_game/color_game.dart';
-import 'package:quebra_cabecas/games/corrida_matematica/corrida_matematica.dart';
 import 'package:quebra_cabecas/games/corrida_matematica/dica_screen.dart';
 import 'package:quebra_cabecas/games/memory_game/memory_game.dart';
 import 'package:quebra_cabecas/games/shape_match/shape_match.dart';

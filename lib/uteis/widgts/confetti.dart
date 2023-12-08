@@ -8,7 +8,6 @@ class ConfettiHelper {
   }
 
   static void showConfetti(ConfettiController controller) {
-    print('dentro');
     controller.play();
   }
 

@@ -26,9 +26,7 @@ class Carta {
       cartas.add(Carta(qtd: uniqueNumbers[i], index: i));
     }
 
-    for (var i = 0; i < cartas.length; i++) {
-      print("$i ${cartas[i].qtd}");
-    }
+    
 
     cartas.shuffle();
 

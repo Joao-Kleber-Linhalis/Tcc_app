@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_visible_for_testing_member, invalid_use_of_protected_member
+
 import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +18,7 @@ class QuebraCabecaWidget extends StatefulWidget {
   final Function() callBackFinish;
   final Function() callBackSucess;
   final int qtdPecas;
-  QuebraCabecaWidget(
+  const QuebraCabecaWidget(
       {super.key,
       required this.child,
       required this.callBackFinish,
@@ -246,7 +248,6 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     _index = 0;
     _carouselController = CarouselController();
     easyMode = false;
@@ -255,7 +256,6 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Size sizeBox = MediaQuery.of(context).size;
 
     return ValueListenableBuilder(
         valueListenable: blockNotifier,
@@ -343,50 +343,44 @@ class QuebraCabecaWidgetState extends State<QuebraCabecaWidget> {
                           child: Stack(
                             children: [
                               // Defina o tamanho do círculo como um terço do tamanho da peça
-                              if (pecasDone.length > 0)
+                              if (pecasDone.isNotEmpty)
                                 ...pecasDone.map(
                                   (map) {
-                                    final imageSize = map
-                                        .pecaQuebraCabecaWidget
-                                        .imageBox
-                                        .size;
                                     return Positioned(
                                       left: map.offset.dx,
                                       top: map.offset.dy,
-                                      child: Container(
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            map.pecaQuebraCabecaWidget,
-                                            if (easyMode)
-                                              Positioned(
-                                                left: 0,
-                                                top: 0,
-                                                child: Container(
-                                                  width: 20,
-                                                  height: 20,
-                                                  decoration:
-                                                      BoxDecoration(
-                                                    color: Colors.white,
-                                                    shape:
-                                                        BoxShape.circle,
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
-                                                      map.numero
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                        color:
-                                                            Colors.black,
-                                                        fontSize:
-                                                            10.0, // Tamanho do número (ajuste conforme necessário)
-                                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          map.pecaQuebraCabecaWidget,
+                                          if (easyMode)
+                                            Positioned(
+                                              left: 0,
+                                              top: 0,
+                                              child: Container(
+                                                width: 20,
+                                                height: 20,
+                                                decoration:
+                                                    const BoxDecoration(
+                                                  color: Colors.white,
+                                                  shape:
+                                                      BoxShape.circle,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    map.numero
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      color:
+                                                          Colors.black,
+                                                      fontSize:
+                                                          10.0, // Tamanho do número (ajuste conforme necessário)
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                          ],
-                                        ),
+                                            ),
+                                        ],
                                       ),
                                     );
                                   },

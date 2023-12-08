@@ -68,7 +68,6 @@ class PathRoadPainter extends CustomPainter with ChangeNotifier {
       }
     }
 
-    Tangent? end = getTangentFromPercent(100);
 
     drawStart(canvas);
     drawEnd(canvas);
@@ -98,7 +97,7 @@ class PathRoadPainter extends CustomPainter with ChangeNotifier {
 
   Tangent? getTangentFromPercent(int percentInt) {
     double percentDouble =
-        (percentInt / 100) * pathLine.computeMetrics().firstOrNull!.length ?? 0;
+        (percentInt / 100) * pathLine.computeMetrics().firstOrNull!.length;
     return pathLine
         .computeMetrics()
         .firstOrNull!
@@ -207,7 +206,6 @@ class PathRoadPainter extends CustomPainter with ChangeNotifier {
   void eventCheckPoint(int percent, {Function(int)? callBack}) {
     int checkPointIndex = checkPointsInt.indexWhere((e) =>
         getDistanceByPercent(e.percentInt, percent) <= 10 && !e.complete);
-    print(checkPointIndex);
     if (checkPointIndex < 0) return;
     callBack?.call(checkPointIndex);
   }

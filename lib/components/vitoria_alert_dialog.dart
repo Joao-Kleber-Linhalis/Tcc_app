@@ -38,18 +38,18 @@ class VitoriaAlertDialog extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          padding: EdgeInsets.only(
+          padding: const EdgeInsets.only(
             top: 100,
             bottom: 16,
             left: 16,
             right: 16,
           ),
-          margin: EdgeInsets.only(top: 16),
+          margin: const EdgeInsets.only(top: 16),
           decoration: BoxDecoration(
             shape: BoxShape.rectangle,
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                 color: Colors.black,
                 offset: Offset(0, 10),
@@ -64,7 +64,7 @@ class VitoriaAlertDialog extends StatelessWidget {
                 child: FittedBox(
                   child: Text(
                     win,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.green, // Cor do texto de vitória
@@ -75,22 +75,22 @@ class VitoriaAlertDialog extends StatelessWidget {
                   falar(win);
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Lottie.asset(
                 'images/win.json',
                 width: MediaQuery.of(context).size.width * 0.8,
                 height: 100,
                 fit: BoxFit.scaleDown,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   InkWell(
                     onTap: () {
-                      push(context, GameOverviewScreen(), replace: true);
+                      push(context, const GameOverviewScreen(), replace: true);
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.home,
                       size: 40,
                       color: Colors.blue, // Cor do ícone de voltar
@@ -112,7 +112,7 @@ class VitoriaAlertDialog extends StatelessWidget {
             ],
           ),
         ),
-        Positioned(
+        const Positioned(
           top: 0,
           left: 16,
           right: 16,

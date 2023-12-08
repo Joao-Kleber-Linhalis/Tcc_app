@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
 
@@ -17,7 +19,7 @@ class CampoTextFormField extends StatelessWidget {
 
   CampoTextFormField(
       this.texto_label,
-      {this.texto_dica = "",
+      {super.key, this.texto_dica = "",
         this.passaword = false,
         this.controlador = null,
         this.validador = null,
@@ -54,7 +56,7 @@ class CampoTextFormField extends StatelessWidget {
         }
       },
       // Estilo da fonte
-      style: TextStyle(
+      style: const TextStyle(
         fontSize: 25,
         color: Colors.black,
       ),
@@ -64,13 +66,13 @@ class CampoTextFormField extends StatelessWidget {
         ),
         labelText: texto_label,
         // Estilo de labelText
-        labelStyle: TextStyle(
+        labelStyle: const TextStyle(
           fontSize: 25,
           color: Colors.grey,
         ),
         hintText: texto_dica,
         // Estilo do hintText
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
           fontSize: 10,
           color: Colors.green,
         ),

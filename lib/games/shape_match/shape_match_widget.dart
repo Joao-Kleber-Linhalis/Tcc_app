@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors_in_immutables
+
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -234,7 +236,6 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     double height = 80;
     double padding = 5;
 
-    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
     classShapes = [];
@@ -300,6 +301,5 @@ class ShapeMatchWidgetState extends State<ShapeMatchWidget>
     //rebuild
     setState(() {});
 
-    print("Size list ${classShapes.length}");
   }
 }

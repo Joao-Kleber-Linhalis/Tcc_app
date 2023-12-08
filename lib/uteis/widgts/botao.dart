@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:flutter/material.dart';
 
 class Botao extends StatelessWidget {
@@ -24,21 +26,21 @@ class Botao extends StatelessWidget {
               borderRadius: new BorderRadius.circular(10.0)),
               backgroundColor: cor,
         ),
+        onPressed: ao_clicar,
+        focusNode: marcador_foco,
         child: mostrar_progress
-            ? Center(
+            ? const Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                 ),
               )
             : Text(
                 texto,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.black,
                   fontSize: 22,
                 ),
               ),
-        onPressed: ao_clicar,
-        focusNode: marcador_foco,
       ),
     );
   }
